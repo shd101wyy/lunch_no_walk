@@ -1,3 +1,5 @@
 <?php
-    echo $_GET["name"];
+    echo date("H");
+    echo date("h");
+    echo date("l");
 ?>

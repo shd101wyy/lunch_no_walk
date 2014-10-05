@@ -59,8 +59,19 @@ class wechatCallbackapiTest{
                         if($result){ // 成功 query
                             // 检查结果是否存在
                             if(mysqli_num_rows($result) > 0){ // 结果存在
-                                $contentStr = "欢迎使用 Lunch No Walk ;)\n";
-                                $contentStr = $contentStr . "菜单如下:\n";
+                                //$contentStr = "欢迎使用 Lunch No Walk ;)\n";
+                                //$contentStr = $contentStr . "菜单如下:\n";
+                                $current_hour = date("H"); // 24小时制。
+                                if($current_hour > 14)
+                                    $current_weekday = date("l", strtotime("+1 day"));
+                                else
+                                    $current_weekday = date("l"); // 如果比14点往后，算下一天的。
+                                $contentStr = "Order special meals? Pay when picking up\n" . 
+                                              $current_weekday . "'s menu:\n" .
+                                              "Meal A: 这里给个链接\n" . 
+                                              "Meal B: 这里给个链接\n"
+                                    . "\n\n以下为测试代码:"
+                                    . "Time now is:" . date("H:i:s") . "\n";
                             }
                             else{ // 结果不存在
                                 $contentStr = "欢迎使用 Lunch No Walk ;)\n" . 
