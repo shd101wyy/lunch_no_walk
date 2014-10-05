@@ -4,15 +4,21 @@
     * 这里要把信息写到数据库里
     */ 
     $wechatid = $_POST["wechatid"];
-    $name = $_POST["name"];
+    $last_name = $_POST["last_name"];
+    $first_name = $_POST["first_name"];
     $phone = $_POST["phone"];
+    $pickup_location = $_POST["pickup_location"];
 
     $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库
     if (mysqli_connect_errno()){
         echo "无法连接到MySQL数据库: " . mysqli_connect_error();
         exit;
     }
-    $query_content = "INSERT INTO user VALUES ('$wechatid', '$name', '$phone')";
+    $query_content = "INSERT INTO user VALUES ( '$wechatid', 
+                                                '$last_name',
+                                                '$first_name',
+                                                '$phone',
+                                                '$pickup_location')";
     mysqli_query($cons, $query_content);
     echo "注册成功";
 ?>
