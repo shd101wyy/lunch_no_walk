@@ -74,6 +74,8 @@
                     </select>
                 </fieldset>
                 
+                <h4>Price: $5.00 </h4>
+                <button> Submit </button>
             </div>
         </div>
         <div data-role="page" id="meal_B">
