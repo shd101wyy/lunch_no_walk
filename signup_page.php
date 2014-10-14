@@ -65,17 +65,13 @@
     </body>
     
     <script type="text/javascript">
+        // 检查用户姓名
         var checkUsernameValid(user_name){
-            for (var i = 0; i < user_name.length; i++){
-                if(user_name.match(/^[a-zA-Z0-9_]+$/))
-                    continue;
-                else
-                    return false;
-            }
-            return true;
+            return user_name.match(/^[a-zA-Z]+$/);
         }
+        // 检查用户phonenumber
         var checkPhonenumberValid(phonenumber){
-            return phonenumber.match(/^[0-9]+$/)
+            return phonenumber.match(/^[0-9]+$/);
         }
         $(document).ready(function(){
             $("#user_signup").click(function(){
