@@ -66,17 +66,21 @@ class wechatCallbackapiTest{
                                     $current_weekday = date("l", strtotime("+1 day"));
                                 else
                                     $current_weekday = date("l"); // 如果比14点往后，算下一天的。
-                                $contentStr = "Order special meals? Pay when picking up\n" . 
-                                              $current_weekday . "'s menu:\n" .
-                                              "Meal A: 这里给个链接\n" . 
-                                              "Meal B: 这里给个链接\n"
-                                    . "\n\n以下为测试代码:"
-                                    . "Time now is:" . date("H:i:s") . "\n";
+                                $arr = mysqli_fetch_array($result, MYSQLI_NUM);
+                                $pickup_location = $arr[4];
+                                $contentStr = "以下为测试代码:"
+                                    . "Time now is:" . date("H:i:s") . "\n" .
+                                      "默认pickup location: " . $pickup_location . "\n\n\n" .
+                                              "Order special meals? Pay when picking up\n" . 
+                                              $current_weekday . "'s menu:\n\n" .
+                                              "<a href=\"www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'\">Meals</a>" /*.
+                                              "<a href=\"www.planetwalley.com/lunch_no_walk/meal_a.php?wechatid='$fromUsername'\">Meal B</a> \n"
+                                    . */;
                             }
                             else{ // 结果不存在
                                 $contentStr = "欢迎使用 Lunch No Walk ;)\n" . 
                                               "请您点击以下连接进行注册\n" .
-                                              "<a href=\"www.planetwalley.com/lunch_no_walk/signup_page.php?wechatid='$fromUsername'\">点击这里注册</a>";
+                                              "<a href=\"www.planetwalley.com/lunch_no_walk/signup_page.php?wechatid='$fromUsername'\">点击这里注册</a>"; 
                                 // 测试
                                 //$contentStr = $contentStr . "\n" . $fromUsername;
                                 //$contentStr = $contentStr . "rows: " . mysqli_num_rows($result);

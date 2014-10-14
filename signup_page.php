@@ -66,11 +66,11 @@
     
     <script type="text/javascript">
         // 检查用户姓名
-        var checkUsernameValid(user_name){
+        var checkUsernameValid = function(user_name){
             return user_name.match(/^[a-zA-Z]+$/);
         }
         // 检查用户phonenumber
-        var checkPhonenumberValid(phonenumber){
+        var checkPhonenumberValid = function(phonenumber){
             return phonenumber.match(/^[0-9]+$/);
         }
         $(document).ready(function(){
@@ -109,7 +109,7 @@
                           pickup_location: pickup_location,
                           wechatid: wechatid}
                 }).done(function(data){
-                    $("#signup_page_content").html("<h3 align='center'> 注册成功 </h3>")
+                    $("#signup_page_content").html("<h3 align='center'> 注册成功 <br> Subscript Successfully</h3>")
                 }).fail(function(data){
                     alert(data);
                 })
