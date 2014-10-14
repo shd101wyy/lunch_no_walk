@@ -65,6 +65,18 @@
     </body>
     
     <script type="text/javascript">
+        var checkUsernameValid(user_name){
+            for (var i = 0; i < user_name.length; i++){
+                if(user_name.match(/^[a-zA-Z0-9_]+$/))
+                    continue;
+                else
+                    return false;
+            }
+            return true;
+        }
+        var checkPhonenumberValid(phonenumber){
+            return phonenumber.match(/^[0-9]+$/)
+        }
         $(document).ready(function(){
             $("#user_signup").click(function(){
                 var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
@@ -73,6 +85,21 @@
                 var user_first_name = $("#signup_user_first_name").val();
                 var phonenumber = $("#signup_phonenumber").val();
                 var pickup_location = $("#pickup_location option:selected").val();
+                // 检查 用户名
+                if(!checkUsernameValid(user_last_name)){
+                    alert("Invalid last name: " + user_last_name);
+                    return;
+                }
+                if(!checkUsernameValid(user_first_name)){
+                    alert("Invalid first name: " + user_first_name);
+                    return;
+                }
+                if(!checkPhonenumberValid(phonenumber)){
+                    alert("Invalid phone number: " + phonenumber);
+                    return;
+                }
+
+
                 // 发送到 signup_action.php
                 // alert("user_name: " +user_name+ " phone: " + phonenumber);
                 $.ajax({
