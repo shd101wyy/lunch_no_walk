@@ -23,22 +23,53 @@
                 </h1>
             </div> -->
             <div data-role="main" class="ui-content">
+                <h3 id="time"></h3>
                 <ul data-role="listview" data-inset="true">
                     <li>
-                        <a href="#meal_A"><img src="images.jpeg">
+                        <a href="#meal_A"  data-transition="slidefade"><img src="images.jpeg">
                             <h2> Meal A</h2>
                             <p> 宫爆鸡丁， 蒜蓉生姜菜</p>
                         </a>
                     </li>
                     <li>
-                        <a href="#meal_B"><img src="images.jpeg">
+                        <a href="#meal_B"  data-transition="slidefade"><img src="images.jpeg">
                             <h2> Meal B </h2>
                             <p>  孜然牛肉， 清炒芥兰 </p>
                         </a>
                     </li>
                 </ul>
             </div>
+            <!-- Footer -->
+            <div data-role="footer"  data-position="fixed">	
+                   <div data-role="navbar">
+                      <ul>
+                         <!-- <li><a href="#meal_page">Menus</a></li> -->
+                         <li><a href="#order_history_page" data-transition="slidefade">My Orders</a></li>
+                         <li><a href="#settings_page" data-transition="slidefade">Settings</a></li>
+                      </ul>
+                   </div><!-- /navbar -->
+            </div><!-- /footer -->
+            
         </div>
+          
+        
+        <!-- Order History Page -->
+        <div data-role="page" id="order_history_page">
+            <div data-role="main" class="ui-content">
+                <p> Show User's Order History Here <br>
+                    Delete current orders
+                </p>
+            </div>
+        </div>
+        <!-- Personal Settings -->
+        <div data-role="page" id="settings_page">
+            <div data-role="main" class="ui-content">
+                <p>
+                    Allow User to change personal information, like pickup location.
+                </p>
+            </div>
+        </div>
+        <!-- Meal Information -->
         <div data-role="page" id="meal_A">
             <div data-role="header">
                 <h1>
@@ -93,6 +124,20 @@
     
     <script>
         $(document).ready(function(){
+            // setup time
+            var d = new Date();
+            var weekday = new Array(7);
+            weekday[0]=  "Sunday";
+            weekday[1] = "Monday";
+            weekday[2] = "Tuesday";
+            weekday[3] = "Wednesday";
+            weekday[4] = "Thursday";
+            weekday[5] = "Friday";
+            weekday[6] = "Saturday";
+            var n = weekday[(d.getHours() >= 14) ? ((d.getDay() + 1) % 7) : d.getDay()];
+            $("#time").html(n + "'s Menus: <br>")
+            
+            
             // set default pickup selection
             var pickup_location = "<?php echo $pickup_location; ?>"
             if(pickup_location[0] == "'" || pickup_location[0] == "\"")

@@ -76,6 +76,30 @@ class wechatCallbackapiTest{
                                               "<a href=\"www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'\">Meals</a>" /*.
                                               "<a href=\"www.planetwalley.com/lunch_no_walk/meal_a.php?wechatid='$fromUsername'\">Meal B</a> \n"
                                     . */;
+                                $textTpl = "<xml>
+                                <ToUserName><![CDATA[%s]]></ToUserName>
+                                <FromUserName><![CDATA[%s]]></FromUserName>
+                                <CreateTime>%s</CreateTime>
+                                <MsgType><![CDATA[%s]]></MsgType>
+                                <ArticleCount>1</ArticleCount>
+                                <Articles>
+                                <item>
+                                <Title><![CDATA[%s]]></Title> 
+                                <Description><![CDATA[%s]]></Description>
+                                <PicUrl><![CDATA[%s]]></PicUrl>
+                                <Url><![CDATA[%s]]></Url>
+                                </item>
+                                </Articles>
+                                </xml>"; 
+                                
+                                $resultStr = sprintf($textTpl, 
+                                    $fromUsername, 
+                                    $toUsername, 
+                                    $time, 
+                                    "news", 
+                                    "Ichiban", 
+                                    "Lunch No Walk",                "http://www.planetwalley.com/lunch_no_walk/ichiban.png", "www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'");
+                	            echo $resultStr;
                             }
                             else{ // 结果不存在
                                 $contentStr = "欢迎使用 Lunch No Walk ;)\n" . 
@@ -84,14 +108,16 @@ class wechatCallbackapiTest{
                                 // 测试
                                 //$contentStr = $contentStr . "\n" . $fromUsername;
                                 //$contentStr = $contentStr . "rows: " . mysqli_num_rows($result);
+                                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                	            echo $resultStr;
                             }
                         }
                         else{ // query 不成功
                             $contentStr = "无法连接到数据库" . mysqli_error($cons);
+                            $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+                	       echo $resultStr;
                         }
                     }
-                	$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-                	echo $resultStr;
                 }else{
                 	echo "Input something...";
                 }
