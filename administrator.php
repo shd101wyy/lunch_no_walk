@@ -35,9 +35,9 @@
                 </h4>
                 
                 <form action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data'>  
-                    <div class="ui-field-contain">
+                    <!--<div class="ui-field-contain">-->
                         <label for="intro">Meal Introduction:</label>
-                        <input type="text" name="intro" value="西红柿炒鸡蛋, 土豆牛肉">
+                        <input type="text" name="intro" id="intro" value="西红柿炒鸡蛋, 土豆牛肉">
                         <br>
                         
                         <label for="uploadPics">Meal Picture:</label>
@@ -46,12 +46,12 @@
                         <br><br>
                         
                         <label for="price">Meal Price:</label>
-                        <input type="text" name="price" value="6">
-                    </div>
+                        <input type="text" name="price" id="price" value="6">
+                    <!--</div>-->
                     <input type="submit" data-icon="check" data-iconpos="right" data-inline="true" style="background:#2E64FE;" value="Save"> 
                 </form>
 
-                <a href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" data-rel="popup"> Delete </a>
+                <a id="delete_button" href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" data-rel="popup"> Delete </a>
                 <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
                 
                 <div data-role="popup" id="confirm_delete">
@@ -67,6 +67,7 @@
     </body>
     
     <script>
+            
         $(document).ready(function(){
             var week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             /*
@@ -76,54 +77,53 @@
                 {
                    date:"Monday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 {
                    date:"Tuesday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 {
                    date:"Wednesday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 {
                    date:"Thursday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 {
                    date:"Friday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 {
                    date:"Saturday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 {
                    date:"Sunday",
                    meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["images.jpeg", "images.jpeg"],
+                   meal_pictures:     ["ichiban.png", "ichiban.png"],
                    prices: [6, 6]
                 }, 
                 
             ]
             
-            
             for(var i = 0; i < week_days.length; i++){
                 var li = "<li data-role='list-divider'> " + 
                              "<div class='ui-grid-a'>" + 
                                 "<div class='ui-block-a' style='margin-top:10px;'><h3>" + week_days[i] + "</h3></div>" +
-                               "<div class='ui-block-b' style='text-align:right;'><a href='#' class='ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-notext ui-corner-all ui-shadow'>add</a></div>" +
+                               "<div class='ui-block-b' style='text-align:right;'><a href='#meal_settings_panel' class='ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-notext ui-corner-all ui-shadow' onclick='clickAddButton();'>add</a></div>" +
                              "</div>" + 
                          "</li>";
                 $("#administrator_page_content ul").append(li);    // append to list
@@ -142,7 +142,7 @@
                     var page_id = week_days[i]+j+"_"+Math.random();
                 
                     // show brief information of that meal
-                    var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade'><p>" + intro + "</p></a>" +  
+                    var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+")\"><p>" + intro + "</p></a>" +  
                              "</li>";
                     $("#administrator_page_content ul").append(li);
                     
@@ -173,6 +173,19 @@
             $('ul').listview('refresh');
 
         });
+         // clicked add button 
+        var clickAddButton = function(){
+            alert("You clicked me"); 
+            // set default values for panel.
+            $("#price").val("7");
+            $("#intro").val("Enter Meal Introduction Here");
+        }
+        
+        var clickEditButton = function(intro, pic, price){
+            $("#price").val(price);
+            $("#intro").val(intro);
+            $("#meal_img").attr("src", pic);
+        }
         
         
     </script>
