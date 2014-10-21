@@ -47,7 +47,7 @@
     </head>
     
     <body>
-        <div data-role="page" id="administrator_page">
+        <div data-role="page" id="administrator_page" data-dialog="false" data-close-btn="none">
             <div data-role="header">
                 <h1>
                     Administrator
@@ -60,7 +60,7 @@
         </div>
         
         <!-- Menu Settings Panel -->
-        <div id="meal_settings_panel" data-role="page" data-dialog="true">
+        <div id="meal_settings_panel" data-role="page" data-dialog="false">
             <div data-role="main" class="ui-content">
                 <h2> Menu Settings Panel </h2>
                 <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data' onsubmit="return validateForm()">  
@@ -99,7 +99,21 @@
     </body>
     
     <script>
-            
+        $(document).on("pagebeforecreate", function(){
+            if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){ // mobile device
+ // some code..
+                    console.log("Mobile device");
+                    $("#administrator_page").attr("data-role", "page");
+                    $("#meal_settings_panel").attr("data-dialog", "false");
+                }
+                else {
+                    console.log("Not Mobile device");
+                    // the one below doesn't work
+                    $("#administrator_page").attr("data-role", "dialog");
+                    $("#meal_settings_panel").attr("data-dialog", "true");                    
+                }     
+        })
+        
         $(document).ready(function(){
             var week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             var data = <?php echo $RESULT; ?>;
@@ -174,10 +188,11 @@
             // image upload refresh
             $("input[type=file]").change(function(){
                 var file = $("input[type=file]")[0].files[0];
-                alert(file.name + "\n" +
+                /*alert(file.name + "\n" +
                       file.type + "\n" + 
                       file.size + "\n" + 
                       file.lastModifiedDate);
+                      */
                 reader = new FileReader();
                 reader.onload = (function (theImg) {
                     return function (evt) {
