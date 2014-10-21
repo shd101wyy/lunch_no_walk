@@ -1,4 +1,30 @@
 <html>
+    <?php
+        $RESULT = "";
+        // retrieve data from database
+        // try connect to sql
+        $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库, connect to sql
+        if (mysqli_connect_errno()){
+            $RESULT = "Cannot connect to MySQL: " . mysqli_connect_error();
+            echo $RESULT;
+            exit;
+        }
+        $query_content = "SELECT * FROM meals";
+        $query_result = mysqli_query($cons, $query_content);
+        
+        if($query_result){
+            $my_array = array(); 
+            while($php_arr = mysqli_fetch_array($query_result, /*MYSQLI_NUM*/MYSQLI_ASSOC)){
+                array_push($my_array, $php_arr);
+            }
+            $js_array = json_encode($my_array);
+            $RESULT = $js_array;
+        }
+        else{
+            $RESULT = "Cannot connect to MySQL";
+        }
+        // echo $RESULT;
+    ?>
     <head>
         <title>
             Administrator Page
@@ -11,6 +37,13 @@
         <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
         <!--<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>-->
+        <style>
+            .ui-input-text.ui-custom {
+                border: none;
+                box-shadow: none;
+                font-weight: bold;
+            }
+        </style>
     </head>
     
     <body>
@@ -30,14 +63,10 @@
         <div id="meal_settings_panel" data-role="page" data-dialog="true">
             <div data-role="main" class="ui-content">
                 <h2> Meal Settings Panel </h2>
-                <h4>
-                    Monday
-                </h4>
-                
                 <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data'>  
                     <!--<div class="ui-field-contain">-->
                         <label for="week_day">Meal for: </label>
-                        <input type="text" name="week_day" id="week_day" value="Monday" data-clear-btn="true">
+                        <input type="text" name="week_day" style="outline:none;" id="week_day" value="Monday" data-wrapper-class="ui-custom" readonly>
                         <label for="intro">Meal Introduction:</label>
                         <input type="text" name="intro" id="intro" value="西红柿炒鸡蛋, 土豆牛肉" data-clear-btn="true">
                         <br>
@@ -72,88 +101,68 @@
             
         $(document).ready(function(){
             var week_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            var data = <?php echo $RESULT; ?>;
             /*
-                Assume I have data in format like this:
+                data is like 
+                [
+                    Object
+                    image_path: "uploads/ichiban.png"
+                    introduction: "rice"
+                    price: "7"
+                    week_day: "Monday"
+                    __proto__: Object
+                , 
+                    Object
+                    image_path: "uploads/ichiban.png"
+                    introduction: "gagagag"
+                    price: "12"
+                    week_day: "Monday"
+                    __proto__: Object
+                , 
+                    Object
+                    image_path: "uploads/ichiban.png"
+                    introduction: ""
+                    price: "0"
+                    week_day: ""
+                    __proto__: Object
+                ]
             */
-            var data = [
-                {
-                   date:"Monday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                {
-                   date:"Tuesday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                {
-                   date:"Wednesday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                {
-                   date:"Thursday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                {
-                   date:"Friday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                {
-                   date:"Saturday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                {
-                   date:"Sunday",
-                   meal_introductions: ["西红柿炒鸡蛋, 土豆牛肉", "红烧菜心, 芥兰牛"],
-                   meal_pictures:     ["ichiban.png", "ichiban.png"],
-                   prices: [6, 6]
-                }, 
-                
-            ]
+            console.log("显示");
+            console.log(data);
             
+            // initialize list-divisor from Monday to Sunday.
             for(var i = 0; i < week_days.length; i++){
-                var li = "<li data-role='list-divider'> " + 
+                var li = "<li data-role='list-divider' id=\"" + week_days[i]  + "_divisor\"> " + 
                              "<div class='ui-grid-a'>" + 
                                 "<div class='ui-block-a' style='margin-top:10px;'><h3>" + week_days[i] + "</h3></div>" +
-                               "<div class='ui-block-b' style='text-align:right;'><a href='#meal_settings_panel' class='ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-notext ui-corner-all ui-shadow' onclick='clickAddButton();'>add</a></div>" +
+                               "<div class='ui-block-b' style='text-align:right;'><a href='#meal_settings_panel' class='ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-notext ui-corner-all ui-shadow' onclick='clickAddButton(\""+week_days[i]+"\");'>add</a></div>" +
                              "</div>" + 
                          "</li>";
                 $("#administrator_page_content ul").append(li);    // append to list
-                
+            }
             
-                var data_for_that_day = data[i]; 
-                var meal_introductions = data_for_that_day.meal_introductions;
-                var meal_pictures = data_for_that_day.meal_pictures;
-                var meal_prices = data_for_that_day.prices;
-                // iterate over meal_introduction and meal_pictures
-                for(var j = 0; j < meal_introductions.length; j++){
-                    var intro = meal_introductions[j];
-                    var pic = meal_pictures[j];
-                    var price = meal_prices[j];
-                    
-                    var page_id = week_days[i]+j+"_"+Math.random();
+            // add data that we get from server
+            for(var i = 0; i < data.length; i++){
+                var d = data[i]; 
+                /*
+                    d is in format of :
+                        image_path: "uploads/ichiban.png"
+                        introduction: "rice"
+                        price: "7"
+                        week_day: "Monday"
+                */
+                var data_for_that_day = d.week_day;
+                var intro = d.introduction;
+                var pic = d.image_path;
+                var price = d.price;
+                if(intro == "" || week_day == "" )
+                    continue;
+                console.log("Add data: " + data_for_that_day + " " + intro + " " + pic);
                 
-                    // show brief information of that meal
-                    var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+")\"><p>" + intro + "</p></a>" +  
+                // show brief information of that meal
+                var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+");\"><p>" + intro + "</p></a>" +  
                              "</li>";
-                    $("#administrator_page_content ul").append(li);
-                    
-                    // create settings page for that day
-                    var new_page = "<div data-role='page' id='"+page_id+"'>" +
-                                    week_days[i] + 
-                                    "</div>";
-                    $("body").append(new_page);     
-                }
+                $("#"+data_for_that_day+"_divisor").after(li);
             }
                                   
             // image upload refresh
@@ -176,19 +185,20 @@
 
         });
          // clicked add button 
-        var clickAddButton = function(){
-            alert("You clicked me"); 
+        var clickAddButton = function(week_day){
             // set default values for panel.
-            $("#week_day").val("Monday");
+            $("#week_day").val(week_day);
             $("#price").val("7");
             $("#intro").val("Enter Meal Introduction Here");
             $("#post_form").attr("action", "restaurant_add_meal.php");
+            $("#delete_button").hide();
         }
 
         var clickEditButton = function(intro, pic, price){
             $("#price").val(price);
             $("#intro").val(intro);
             $("#meal_img").attr("src", pic);
+            $("#delete_button").show();
         }
         
         

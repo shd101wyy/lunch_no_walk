@@ -24,6 +24,9 @@
             $target_dir = $target_dir . "ichiban.png"; // default png
         }
         else{
+            /**
+            *  TODO: check file already exist.
+            **/
             $target_dir = $target_dir . $base;
             //echo "target_dir: " . $target_dir;
             //echo "tmp_name: " . $_FILES["uploadPics"]["tmp_name"];
@@ -36,7 +39,6 @@
                 $target_dir = "uploads/ichiban.png"; // change target dir since we got error
             }
         }
-
         // try connect to sql
         $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库, connect to sql
         if (mysqli_connect_errno()){
