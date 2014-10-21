@@ -139,7 +139,7 @@
                 var li = "<li data-role='list-divider' id=\"" + week_days[i]  + "_divisor\"> " + 
                              "<div class='ui-grid-a'>" + 
                                 "<div class='ui-block-a' style='margin-top:10px;'><h3>" + week_days[i] + "</h3></div>" +
-                               "<div class='ui-block-b' style='text-align:right;'><a href='#meal_settings_panel' class='ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-notext ui-corner-all ui-shadow' onclick='clickAddButton(\""+week_days[i]+"\");'>add</a></div>" +
+                               "<div class='ui-block-b' style='text-align:right;'><a href='#meal_settings_panel' class='ui-btn ui-btn-inline ui-icon-plus ui-btn-icon-notext ui-corner-all ui-shadow' onclick='clickAddButton(\""+week_days[i]+"\");' data-transition='slidefade'>add</a></div>" +
                              "</div>" + 
                          "</li>";
                 $("#administrator_page_content ul").append(li);    // append to list
@@ -195,7 +195,7 @@
             // set default values for panel.
             $("#week_day").val(week_day);
             $("#price").val("7");
-            $("#intro").val("Enter Meal Introduction Here");
+            $("#intro").val("Enter Menu Introduction Here");
             $("#post_form").attr("action", "restaurant_add_menu.php");
             $("#delete_button").hide();
         }

@@ -68,14 +68,7 @@ class wechatCallbackapiTest{
                                     $current_weekday = date("l"); // 如果比14点往后，算下一天的。
                                 $arr = mysqli_fetch_array($result, MYSQLI_NUM);
                                 $pickup_location = $arr[4];
-                                $contentStr = "以下为测试代码:"
-                                    . "Time now is:" . date("H:i:s") . "\n" .
-                                      "默认pickup location: " . $pickup_location . "\n\n\n" .
-                                              "Order special meals? Pay when picking up\n" . 
-                                              $current_weekday . "'s menu:\n\n" .
-                                              "<a href=\"www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'\">Meals</a>" /*.
-                                              "<a href=\"www.planetwalley.com/lunch_no_walk/meal_a.php?wechatid='$fromUsername'\">Meal B</a> \n"
-                                    . */;
+                                $is_admin = $arr[5];
                                 $textTpl = "<xml>
                                 <ToUserName><![CDATA[%s]]></ToUserName>
                                 <FromUserName><![CDATA[%s]]></FromUserName>
@@ -91,15 +84,30 @@ class wechatCallbackapiTest{
                                 </item>
                                 </Articles>
                                 </xml>"; 
+                                if($is_admin == 0){ // is user, not admin
+                                    $resultStr = sprintf($textTpl, 
+                                                        $fromUsername, 
+                                                        $toUsername, 
+                                                        $time, 
+                                                        "news", 
+                                                        "Ichiban", 
+                                                        "Lunch No Walk",               
+                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                    "www.planetwalley.com/lunch_no_walk/meals.php?                                      wechatid='$fromUsername'&pickup_location='$pickup_location'");
+                                    
+                                }
+                                else{ // it is admin
+                                    $resultStr = sprintf($textTpl, 
+                                                        $fromUsername, 
+                                                        $toUsername, 
+                                                        $time, 
+                                                        "news", 
+                                                        "Welcome Admin", 
+                                                        "Click me to edit menu",               
+                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                    "http://www.planetwalley.com/lunch_no_walk/administrator.php");
+                                }
+                	           echo $resultStr;                                
                                 
-                                $resultStr = sprintf($textTpl, 
-                                    $fromUsername, 
-                                    $toUsername, 
-                                    $time, 
-                                    "news", 
-                                    "Ichiban", 
-                                    "Lunch No Walk",                "http://www.planetwalley.com/lunch_no_walk/ichiban.png", "www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'");
-                	            echo $resultStr;
+                                
                             }
                             else{ // 结果不存在
                                 $contentStr = "欢迎使用 Lunch No Walk ;)\n" . 
