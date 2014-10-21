@@ -76,7 +76,8 @@
         $(document).ready(function(){
             $("#user_signup").click(function(){
                 var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
-                wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
+                if(wechatid[0] == "'" || wechatid[0] == '"')
+                    wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
                 var user_last_name = $("#signup_user_last_name").val();
                 var user_first_name = $("#signup_user_first_name").val();
                 var phonenumber = $("#signup_phonenumber").val();

@@ -97,12 +97,19 @@
                 </fieldset>
                 
                 <h4 id="menu_price">5.00 </h4>
-                <button> Submit </button>
+                <button id="submit_button"> Submit </button>
             </div>
         </div>
     </body>
     
     <script>
+        // global variable
+        var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
+        if(wechatid[0] == "'" || wechatid[0] == '"') 
+                wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
+        var pickup_location = "<?php echo $pickup_location; ?>"
+        if(pickup_location[0] == "'" || pickup_location[0] == "\"")
+                pickup_location = pickup_location.slice(1, pickup_location.length - 1);
         $(document).ready(function(){
             // setup time
             var d = new Date();
@@ -156,7 +163,7 @@
                 }
             ?>
             console.log("Get Data");
-            var data = <?php echo $RESULT; ?>;
+            var data = <?php echo $RESULT; ?>;         // get menu data
             /*
                 data is like 
                 [
@@ -216,9 +223,6 @@
 
             
             // set default pickup selection
-            var pickup_location = "<?php echo $pickup_location; ?>"
-            if(pickup_location[0] == "'" || pickup_location[0] == "\"")
-                pickup_location = pickup_location.slice(1, pickup_location.length - 1);
             var pickup_location_selection_options = "";
             var locations = ["MNTL", "BIF", "RAL"];
             for(var i = 0; i < locations.length; i++){
@@ -245,6 +249,33 @@
         $("#menu_price").html(" Price: $" + price);
         $("#menu_info").attr("menu_id", id);
     }    
+    // clicked submit button
+    // 下订单
+    $("#submit_button").click(function(){ 
+        alert("Clicked me");
+        var menu_id = $("#menu_info").attr("menu_id"); // get menu id  
+        // var wechatid = wechatid; // get wechatid
+        var pickup_location = $("#pickup_location option:selected").val(); // get pickup location
+        var order_num = $("#order_num option:selected").val(); // get order num
+        $.ajax({
+                    url: "./submit_order.php",
+                    async: false,
+                    type: "POST",
+                    // 下面是发送的信息
+                    data:{menu_id: menu_id,
+                          wechat_id: wechatid,
+                          pickup_location: pickup_location,
+                          order_num: order_num}
+                }).done(function(data){
+                    alert("Submit order successfully!: " + data);
+                    location.reload(); // reload page
+                }).fail(function(data){
+                    alert(data);
+                });
+
+    });
+    
+    
     
     </script>
 </html>

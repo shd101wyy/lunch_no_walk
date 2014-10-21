@@ -19,7 +19,7 @@
         $week_day = $_POST["week_day"];
         //echo "Weekday: " . $week_day;
 
-        $target_dir = "uploads/";
+        $target_dir = "uploads/" . uniqid();  // append unique id ahead image file.
         $base = $_FILES["uploadPics"]["name"];
         $id = uniqid();
         //echo "base: " . basename( $_FILES["uploadPics"]["name"]);
