@@ -63,7 +63,7 @@
         <div id="meal_settings_panel" data-role="page" data-dialog="false">
             <div data-role="main" class="ui-content">
                 <h2> Menu Settings Panel </h2>
-                <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data' onsubmit="return validateForm()">  
+                <form id="post_form" action="#" method="post" data-ajax="false" enctype='multipart/form-data' onsubmit="return validateForm()">  
                     <!--<div class="ui-field-contain">-->
                         <input type="text" name="id" id="menu_id" style="display:none;" readonly>
                         <label for="week_day">Menu for: </label>
