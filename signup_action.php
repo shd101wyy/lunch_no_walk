@@ -18,7 +18,8 @@
                                                 '$last_name',
                                                 '$first_name',
                                                 '$phone',
-                                                '$pickup_location')";
+                                                '$pickup_location',
+                                                0)";
     mysqli_query($cons, $query_content);
     echo "注册成功";
 ?>

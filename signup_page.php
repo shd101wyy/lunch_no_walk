@@ -73,11 +73,11 @@
         var checkPhonenumberValid = function(phonenumber){
             return phonenumber.match(/^[0-9]+$/);
         }
+        var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
+        if(wechatid[0] == "'" || wechatid[0] == '"')
+            wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
         $(document).ready(function(){
             $("#user_signup").click(function(){
-                var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
-                if(wechatid[0] == "'" || wechatid[0] == '"')
-                    wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
                 var user_last_name = $("#signup_user_last_name").val();
                 var user_first_name = $("#signup_user_first_name").val();
                 var phonenumber = $("#signup_phonenumber").val();
@@ -98,9 +98,8 @@
 
 
                 // 发送到 signup_action.php
-                // alert("user_name: " +user_name+ " phone: " + phonenumber);
                 $.ajax({
-                    url: "./signup_action.php",
+                    url: "signup_action.php",
                     async: false,
                     type: "POST",
                     // 下面是发送的信息
