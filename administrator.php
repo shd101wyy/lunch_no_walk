@@ -59,25 +59,25 @@
             </div>  
         </div>
         
-        <!-- Meal Settings Panel -->
+        <!-- Menu Settings Panel -->
         <div id="meal_settings_panel" data-role="page" data-dialog="true">
             <div data-role="main" class="ui-content">
-                <h2> Meal Settings Panel </h2>
-                <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data'>  
+                <h2> Menu Settings Panel </h2>
+                <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data' onsubmit="return validateForm()">  
                     <!--<div class="ui-field-contain">-->
                         <input type="text" name="id" id="menu_id" style="display:none;" readonly>
-                        <label for="week_day">Meal for: </label>
+                        <label for="week_day">Menu for: </label>
                         <input type="text" name="week_day" style="outline:none;" id="week_day" value="Monday" data-wrapper-class="ui-custom" readonly>
-                        <label for="intro">Meal Introduction:</label>
+                        <label for="intro">Menu Introduction:</label>
                         <input type="text" name="intro" id="intro" value="西红柿炒鸡蛋, 土豆牛肉" data-clear-btn="true">
                         <br>
                         
-                        <label for="uploadPics">Meal Picture:</label>
+                        <label for="uploadPics">Menu Picture:</label>
                         <input type="file"  name="uploadPics" accept="image/*" capture> 
                         <img id="meal_img" src="ichiban.png" width="80%" height="40%">
                         <br><br>
                         
-                        <label for="price">Meal Price:</label>
+                        <label for="price">Menu Price:</label>
                         <input type="text" name="price" id="price" value="6" data-clear-btn="true">
                     <!--</div>-->
                     <input type="submit" data-icon="check" data-iconpos="right" data-inline="true" style="background:#2E64FE;" value="Save"> 
@@ -87,7 +87,7 @@
                 <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
                 
                 <div data-role="popup" id="confirm_delete">
-                    <p>Are u sure u want to delete this meal.</p>
+                    <p>Are u sure u want to delete this menu.</p>
                     <a onclick='delete_meal();' href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" name="used_to_save_delete_id">Yes, Delete</a>
                     <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back"> No. </a>
                 </div>
@@ -225,6 +225,26 @@
                 }).fail(function(data){
                     alert(data);
                 })
+        }
+        
+        // check content valid
+        var validateForm = function(){
+            
+            // check intro is valid
+            var intro = $("#intro").val();
+            for(var i = 0; i < intro.length; i++){
+                if(intro[i] == "'" || intro[i] == "\""){
+                    alert("Menu Intro contains invalid character: " + intro[i]);
+                    return false;
+                }
+            }
+            // check price is numeric
+            var price = $("#price").val();
+            if(isNaN(price)){
+                alert("Invalid price: " + price);
+                return false;
+            }
+            return true;
         }
         
         
