@@ -65,6 +65,7 @@
                 <h2> Meal Settings Panel </h2>
                 <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data'>  
                     <!--<div class="ui-field-contain">-->
+                        <input type="text" name="id" id="menu_id" style="display:none;" readonly>
                         <label for="week_day">Meal for: </label>
                         <input type="text" name="week_day" style="outline:none;" id="week_day" value="Monday" data-wrapper-class="ui-custom" readonly>
                         <label for="intro">Meal Introduction:</label>
@@ -160,12 +161,12 @@
                 var pic = d.image_path;
                 var price = d.price;
                 var id = d.id;
-                if(intro == "" || week_day == "" )
+                if(intro == "" || data_for_that_day == "" )
                     continue;
                 console.log("Add data: " + data_for_that_day + " " + intro + " " + pic);
                 
                 // show brief information of that meal
-                var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+ ", '"  + id + "');\"><p>" + intro + "</p></a>" +  
+                var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+ ", '"  + id + "', '" + data_for_that_day +"');\"><p>" + intro + "</p></a>" +  
                              "</li>";
                 $("#"+data_for_that_day+"_divisor").after(li);
             }
@@ -195,22 +196,25 @@
             $("#week_day").val(week_day);
             $("#price").val("7");
             $("#intro").val("Enter Meal Introduction Here");
-            $("#post_form").attr("action", "restaurant_add_meal.php");
+            $("#post_form").attr("action", "restaurant_add_menu.php");
             $("#delete_button").hide();
         }
 
-        var clickEditButton = function(intro, pic, price, id){
+        var clickEditButton = function(intro, pic, price, id, week_day){
+            $("#week_day").val(week_day);
             $("#price").val(price);
             $("#intro").val(intro);
             $("#meal_img").attr("src", pic);
             $("#delete_button").show();
             $("#delete_button").attr("name", id);
+            $("#menu_id").val(id); 
+            $("#post_form").attr("action", "restaurant_update_menu.php");
         }
         var delete_meal = function(){
             var id = $("#delete_button").attr("name");
             // post to restaurant_delete_meal.php to delete meal
             $.ajax({
-                    url: "./restaurant_delete_meal.php",
+                    url: "./restaurant_delete_menu.php",
                     async: false,
                     type: "POST",
                     // 下面是发送的信息
