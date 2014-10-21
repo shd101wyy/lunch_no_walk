@@ -84,7 +84,18 @@ class wechatCallbackapiTest{
                                 </item>
                                 </Articles>
                                 </xml>"; 
-                                if($is_admin == 0){ // is user, not admin
+                                if($is_admin == 1 && $keyword == "admin"){ // is admin, not user
+                                    $resultStr = sprintf($textTpl, 
+                                                        $fromUsername, 
+                                                        $toUsername, 
+                                                        $time, 
+                                                        "news", 
+                                                        "Welcome Admin", 
+                                                        "Click me to edit menu",               
+                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                    "http://www.planetwalley.com/lunch_no_walk/administrator.php");
+                                    
+                                }
+                                else{ // it is admin
                                     $resultStr = sprintf($textTpl, 
                                                         $fromUsername, 
                                                         $toUsername, 
@@ -94,16 +105,6 @@ class wechatCallbackapiTest{
                                                         "Lunch No Walk, Menu for " . $current_weekday . " " . $current_hour,               
                                                 "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                   "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'");
                                     
-                                }
-                                else{ // it is admin
-                                    $resultStr = sprintf($textTpl, 
-                                                        $fromUsername, 
-                                                        $toUsername, 
-                                                        $time, 
-                                                        "news", 
-                                                        "Welcome Admin", 
-                                                        "Click me to edit menu",               
-                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                    "http://www.planetwalley.com/lunch_no_walk/administrator.php");
                                 }
                 	           echo $resultStr;                                
                                 

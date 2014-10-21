@@ -68,7 +68,7 @@
                 </h1>
             </div>   
             <div data-role="main" class="ui-content">
-                <img id="menu_pic" src="images.jpeg" width="40%", height="40%">
+                <img id="menu_pic" src="images.jpeg" width="100%", height="40%">
                 <p> 宫爆鸡丁， 蒜蓉生姜菜 </p>
                 <!-- 下拉菜单 pickup location -->
                 <fieldset class="ui-field-contain">
@@ -96,7 +96,7 @@
                     </select>
                 </fieldset>
                 
-                <h4 id="menu_price">Price: $5.00 </h4>
+                <h4 id="menu_price">5.00 </h4>
                 <button> Submit </button>
             </div>
         </div>
@@ -240,10 +240,9 @@
     // check menu information
     // customers can buy meal from it.
     var check_menu = function(menu_num, pic, price, id){
-        alert("click");
         $("#menu_num").html(menu_num);
         $("#menu_pic").attr("src", pic);
-        $("#menu_price").html(price);
+        $("#menu_price").html(" Price: $" + price);
         $("#menu_info").attr("menu_id", id);
     }    
     
