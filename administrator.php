@@ -216,7 +216,8 @@
                     // 下面是发送的信息
                     data:{id: id} 
                 }).done(function(data){
-                    alert("Delete Successfully");
+                    alert("Delete Successfully:");
+                    location.reload();
                 }).fail(function(data){
                     alert(data);
                 })

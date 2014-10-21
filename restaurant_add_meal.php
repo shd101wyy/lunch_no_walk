@@ -3,10 +3,12 @@
         <meta charset="utf-8">
     </head>
     <body>
-        <h1>
-            Please Wait While Uploading Data to Server.  <br>
-            请稍等， 我们正在上传信息到服务器。
-        </h1>
+        <div id="my_div">
+            <h1>
+                Please Wait While Uploading Data to Server.  <br>
+                请稍等， 我们正在上传信息到服务器。
+            </h1> 
+        </div>
     </body>
     <?php 
         //echo "Restaurant add meal";
@@ -52,7 +54,14 @@
                                                      '$week_day',
                                                      '$id')";
         mysqli_query($cons, $query_content);
-        echo "Done";
-        exit;
+        $RESULT = "Done";
     ?>
+    <script>
+        var result = "<?php echo $RESULT ?>";
+        if(result == "Done")
+            window.location.replace("http://planetwalley.com/lunch_no_walk/administrator.php"); // reload administrator.php page
+        else{ // error
+            document.getElementById("my_div").innerHTML = "<h1> Error, Failed to add menu </h1>";
+        }
+    </script>
 </html>
