@@ -19,6 +19,7 @@
 
         $target_dir = "uploads/";
         $base = $_FILES["uploadPics"]["name"];
+        $id = uniqid();
         //echo "base: " . basename( $_FILES["uploadPics"]["name"]);
         if(empty($base)){ // base is empty
             $target_dir = $target_dir . "ichiban.png"; // default png
@@ -48,7 +49,8 @@
         $query_content = "INSERT INTO meals VALUES ( '$intro', 
                                                      '$price',
                                                      '$target_dir',
-                                                     '$week_day')";
+                                                     '$week_day',
+                                                     '$id')";
         mysqli_query($cons, $query_content);
         echo "Done";
         exit;

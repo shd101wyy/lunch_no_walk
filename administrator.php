@@ -82,12 +82,12 @@
                     <input type="submit" data-icon="check" data-iconpos="right" data-inline="true" style="background:#2E64FE;" value="Save"> 
                 </form>
 
-                <a id="delete_button" href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" data-rel="popup"> Delete </a>
+                <a id="delete_button" href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" data-rel="popup" name="used_to_save_delete_id"> Delete </a>
                 <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
                 
                 <div data-role="popup" id="confirm_delete">
                     <p>Are u sure u want to delete this meal.</p>
-                    <a href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;">Yes, Delete</a>
+                    <a onclick='delete_meal();' href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" name="used_to_save_delete_id">Yes, Delete</a>
                     <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back"> No. </a>
                 </div>
             </div>
@@ -110,6 +110,7 @@
                     introduction: "rice"
                     price: "7"
                     week_day: "Monday"
+                    id: "..."
                     __proto__: Object
                 , 
                     Object
@@ -117,6 +118,7 @@
                     introduction: "gagagag"
                     price: "12"
                     week_day: "Monday"
+                    id: "..."
                     __proto__: Object
                 , 
                     Object
@@ -124,6 +126,7 @@
                     introduction: ""
                     price: "0"
                     week_day: ""
+                    id: "..."
                     __proto__: Object
                 ]
             */
@@ -150,17 +153,19 @@
                         introduction: "rice"
                         price: "7"
                         week_day: "Monday"
+                        id: "..."
                 */
                 var data_for_that_day = d.week_day;
                 var intro = d.introduction;
                 var pic = d.image_path;
                 var price = d.price;
+                var id = d.id;
                 if(intro == "" || week_day == "" )
                     continue;
                 console.log("Add data: " + data_for_that_day + " " + intro + " " + pic);
                 
                 // show brief information of that meal
-                var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+");\"><p>" + intro + "</p></a>" +  
+                var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+ ", '"  + id + "');\"><p>" + intro + "</p></a>" +  
                              "</li>";
                 $("#"+data_for_that_day+"_divisor").after(li);
             }
@@ -194,11 +199,27 @@
             $("#delete_button").hide();
         }
 
-        var clickEditButton = function(intro, pic, price){
+        var clickEditButton = function(intro, pic, price, id){
             $("#price").val(price);
             $("#intro").val(intro);
             $("#meal_img").attr("src", pic);
             $("#delete_button").show();
+            $("#delete_button").attr("name", id);
+        }
+        var delete_meal = function(){
+            var id = $("#delete_button").attr("name");
+            // post to restaurant_delete_meal.php to delete meal
+            $.ajax({
+                    url: "./restaurant_delete_meal.php",
+                    async: false,
+                    type: "POST",
+                    // 下面是发送的信息
+                    data:{id: id} 
+                }).done(function(data){
+                    alert("Delete Successfully");
+                }).fail(function(data){
+                    alert(data);
+                })
         }
         
         
