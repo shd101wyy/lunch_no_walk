@@ -62,7 +62,7 @@ class wechatCallbackapiTest{
                                 //$contentStr = "欢迎使用 Lunch No Walk ;)\n";
                                 //$contentStr = $contentStr . "菜单如下:\n";
                                 $current_hour = date("H"); // 24小时制。
-                                if($current_hour > 14)
+                                if($current_hour >= 14)
                                     $current_weekday = date("l", strtotime("+1 day"));
                                 else
                                     $current_weekday = date("l"); // 如果比14点往后，算下一天的。
@@ -91,8 +91,8 @@ class wechatCallbackapiTest{
                                                         $time, 
                                                         "news", 
                                                         "Ichiban", 
-                                                        "Lunch No Walk",               
-                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                    "www.planetwalley.com/lunch_no_walk/meals.php?                                      wechatid='$fromUsername'&pickup_location='$pickup_location'");
+                                                        "Lunch No Walk, Menu for " . $current_weekday . " " . $current_hour,               
+                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                   "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'");
                                     
                                 }
                                 else{ // it is admin
