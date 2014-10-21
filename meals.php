@@ -48,6 +48,10 @@
                 <p> Show User's Order History Here <br>
                     Delete current orders
                 </p>
+                
+                <ul data-role="listview" data-inset="true" id="order_history_list">
+                    <!-- Show user order here -->
+                </ul>
             </div>
         </div>
         <!-- Personal Settings -->
@@ -110,6 +114,7 @@
         var pickup_location = "<?php echo $pickup_location; ?>"
         if(pickup_location[0] == "'" || pickup_location[0] == "\"")
                 pickup_location = pickup_location.slice(1, pickup_location.length - 1);
+        var current_url = document.URL;
         $(document).ready(function(){
             // setup time
             var d = new Date();
@@ -147,6 +152,7 @@
                     echo $RESULT;
                     exit;
                 }
+                // get menus today
                 $query_content = "SELECT * FROM meals WHERE week_day='$current_weekday'";
                 $query_result = mysqli_query($cons, $query_content);
 
@@ -161,9 +167,35 @@
                 else{
                     $RESULT = "Cannot connect to MySQL";
                 }
+
+                // get user order
+                $query_content = "SELECT * FROM meal_order WHERE wechat_id='$wechatid'";
+                $query_result = mysqli_query($cons, $query_content);
+                if($query_result){
+                    $my_array = array();
+                    while($php_arr = mysqli_fetch_array($query_result, MYSQLI_ASSOC)){
+                        $menu_id = $php_arr["menu_id"]; // get menu_id
+                        // retrieve menu according to menu_id
+                        
+                        $query_for_menu = "SELECT * FROM meals WHERE id='$menu_id'";
+                        $query_for_menu = mysqli_query($cons, $query_for_menu);
+                        
+                        $menu_data = mysqli_fetch_array($query_for_menu, MYSQLI_ASSOC);
+                        
+                        // add menu property to $php_arr.
+                        $php_arr["menu"] = $menu_data;
+                        array_push($my_array, $php_arr);
+                    }
+                    $js_array = json_encode($my_array);
+                    $ORDER_HISTORY = $js_array;
+                }
+                else{
+                    $ORDER_HISTORY = "Cannot connect to MySQL";
+                }
             ?>
             console.log("Get Data");
             var data = <?php echo $RESULT; ?>;         // get menu data
+            var order_history = <?php echo $ORDER_HISTORY; ?>;
             /*
                 data is like 
                 [
@@ -193,6 +225,7 @@
                 ]
             */
             console.log(data);
+            console.log(order_history);
             for(var i = 0; i < data.length; i++){
                 var d = data[i];
                 var pic = d.image_path;
@@ -238,6 +271,54 @@
             $("#pickup_location").html(pickup_location_selection_options);
             
             
+            
+            // set order history.  $("#order_history")
+            for(var i = 0; i < order_history.length; i++){
+                var o = order_history[i];
+                /*
+                * o is in format like:
+                [Log] [ (meals.php, line 166)
+                        Object
+                            complete: "0"
+                            menu: Object
+                                id: "5445cf32b37da"
+                                image_path: "uploads/ichiban.png"
+                                introduction: "I am handsome"
+                                price: "213"
+                                week_day: "Wednesday"
+                                __proto__: Object
+                            menu_id: "5445cf32b37da"
+                            order_id: "5446cb29cc3d9"
+                            order_num: "1"
+                            pickup_location: "MNTL"
+                            wechat_id: "yiyi"
+                            __proto__: Object
+                        ]
+                *
+                */
+                
+                var complete = o.complete;
+                var menu = o.menu;
+                var order_id = o.order_id;
+                var order_num = o.order_num;
+                var pickup_location = o.pickup_location;
+                var pic = menu.image_path;
+                var intro = menu.introduction;
+                var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
+                var content = 
+            "<li>" + 
+                "<h2> order id: " + order_id + "</h2>" + 
+                "<p> menu: " + intro + "</p>" +  
+                "<p> order num: " + order_num + "</p>" + 
+                "<p> pickup location: " + pickup_location + "</p>" +
+                "<p> total price: " + price + "</p>" + 
+            "</li>";
+                
+                $("#order_history_list").append(content);
+                
+            }
+            
+            
             // refresh listview
             $('ul').listview('refresh');
         })
@@ -252,7 +333,6 @@
     // clicked submit button
     // 下订单
     $("#submit_button").click(function(){ 
-        alert("Clicked me");
         var menu_id = $("#menu_info").attr("menu_id"); // get menu id  
         // var wechatid = wechatid; // get wechatid
         var pickup_location = $("#pickup_location option:selected").val(); // get pickup location
@@ -268,7 +348,7 @@
                           order_num: order_num}
                 }).done(function(data){
                     alert("Submit order successfully!: " + data);
-                    location.reload(); // reload page
+                    window.location.replace(current_url); // reload page
                 }).fail(function(data){
                     alert(data);
                 });
