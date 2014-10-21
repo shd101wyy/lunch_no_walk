@@ -34,10 +34,12 @@
                     Monday
                 </h4>
                 
-                <form action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data'>  
+                <form id="post_form" action="change_meal_settings.php" method="post" data-ajax="false" enctype='multipart/form-data'>  
                     <!--<div class="ui-field-contain">-->
+                        <label for="week_day">Meal for: </label>
+                        <input type="text" name="week_day" id="week_day" value="Monday" data-clear-btn="true">
                         <label for="intro">Meal Introduction:</label>
-                        <input type="text" name="intro" id="intro" value="西红柿炒鸡蛋, 土豆牛肉">
+                        <input type="text" name="intro" id="intro" value="西红柿炒鸡蛋, 土豆牛肉" data-clear-btn="true">
                         <br>
                         
                         <label for="uploadPics">Meal Picture:</label>
@@ -46,7 +48,7 @@
                         <br><br>
                         
                         <label for="price">Meal Price:</label>
-                        <input type="text" name="price" id="price" value="6">
+                        <input type="text" name="price" id="price" value="6" data-clear-btn="true">
                     <!--</div>-->
                     <input type="submit" data-icon="check" data-iconpos="right" data-inline="true" style="background:#2E64FE;" value="Save"> 
                 </form>
@@ -177,10 +179,12 @@
         var clickAddButton = function(){
             alert("You clicked me"); 
             // set default values for panel.
+            $("#week_day").val("Monday");
             $("#price").val("7");
             $("#intro").val("Enter Meal Introduction Here");
+            $("#post_form").attr("action", "restaurant_add_meal.php");
         }
-        
+
         var clickEditButton = function(intro, pic, price){
             $("#price").val(price);
             $("#intro").val(intro);
