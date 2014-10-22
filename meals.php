@@ -432,9 +432,9 @@
             async: false,
             type: "POST",
             // 下面是发送的信息
-            data:{last_name: user_last_name,
-                  first_name: user_first_name,
-                  phone: phonenumber,
+            data:{last_name: last_name,
+                  first_name: first_name,
+                  phone: phone,
                   pickup_location: pickup_location,
                   wechatid: wechatid}
         }).done(function(data){
