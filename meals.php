@@ -117,8 +117,8 @@
         <!-- Order History Page -->
         <div data-role="page" id="order_history_page">
             <div data-role="main" class="ui-content">
-                <p> Show User's Order History Here <br>
-                    Delete current orders
+                <p> You can check your orders here <br>
+                    You can cancel order here by clicking crossing button.
                 </p>
                 
                 <ul data-role="listview" data-inset="true" id="order_history_list">
@@ -130,7 +130,7 @@
         <div data-role="page" id="settings_page">
             <div data-role="main" class="ui-content">
                 <p>
-                    Allow User to change personal information, like pickup location.
+                   You can update your profile information here.
                 </p>
                 <!-- <h3> 请填写下面信息 </h3>
                 Change information
@@ -200,11 +200,11 @@
                 <button id="submit_button"> Submit </button>
             </div>
         </div>
-        <!-- Delete Order -->
+        <!-- Cancel Order -->
         <div data-role="page" id="delete_order" data-dialog="true">
           <div data-role="main" class="ui-content">
-          <h3>Delete Order</h3>
-            <p>Are you sure you want to delete this order?</p>
+          <h3>Cancel Order</h3>
+            <p>Are you sure you want to cancel this order?</p>
             <a href="#" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini" id='delete_order_button'>Delete</a>
             <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
           </div>
