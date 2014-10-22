@@ -77,7 +77,7 @@
     ?>
     <head>
         <title>
-            Meals
+            Menus
         </title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -91,7 +91,7 @@
         <div data-role="page" id="meal_page">
             <!-- <div data-role="header">
                 <h1>
-                    Meal A
+                    Menu A
                 </h1>
             </div> -->
             <div data-role="main" class="ui-content">
@@ -164,7 +164,7 @@
         <div data-role="page" id="menu_info">
             <div data-role="header">
                 <h1 id="menu_num">
-                    Meal A
+                    Menu A
                 </h1>
             </div>   
             <div data-role="main" class="ui-content">
@@ -301,16 +301,16 @@
                 /*
                  <li>
                         <a href="#meal_A"  data-transition="slidefade"><img src="images.jpeg">
-                            <h2> Meal A</h2>
+                            <h2> Menu A</h2>
                             <p> 宫爆鸡丁， 蒜蓉生姜菜</p>
                         </a>
                     </li>
                 */
                 var content = 
             "<li>" + 
-                "<a onclick=\"check_menu('Meal " + (1 + i) + "', '" + pic + "', " + price + ", '" + id + "', '" + intro + "')\" " + 
+                "<a onclick=\"check_menu('Menu " + (1 + i) + "', '" + pic + "', " + price + ", '" + id + "', '" + intro + "')\" " + 
                     "href='#menu_info' data-transition='slidefade'><img src='" + pic + "'>" + 
-                    "<h2>Meal " + (1 + i) + "</h2>" + 
+                    "<h2>Menu " + (1 + i) + "</h2>" + 
                     "<p>" + intro + "</p>" + 
                     "<p>$" + price + "</p>" +
                 "</a>"+
