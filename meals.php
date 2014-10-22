@@ -4,9 +4,7 @@
         if($wechatid[0] === "'"){
             $wechatid = substr($wechatid, 1, -1);
         }
-        $pickup_location = stripslashes($_GET["pickup_location"]);
-        if($pickup_location[0] === "'")
-            $pickup_location = substr($pickup_location, 1, -1);
+       
         // calculate weekday.
         $current_hour = date("H"); // 24小时制。
         if($current_hour >= 14)
@@ -210,10 +208,6 @@
         if(wechatid[0] === "'" || wechatid[0] === "\""){
             wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
         }
-        var pickup_location = "<?php echo $pickup_location; ?>"
-        if(pickup_location[0] == "'" || pickup_location[0] == "\""){
-            pickup_location = pickup_location.slice(1, pickup_location.length - 1);
-        }
         
         /*
         * user_info is in format like:
@@ -228,9 +222,10 @@
 
         */
         var user_info = <?php echo $USER_INFO; ?>;
-        console.log(wechatid);
-        console.log(pickup_location);
-        console.log(user_info);
+        var pickup_location = user_info.pickup_location;
+        //console.log(wechatid);
+        //console.log(pickup_location);
+        //console.log(user_info);
         var current_url = document.URL;
         $(document).ready(function(){
             // setup time
@@ -252,7 +247,7 @@
             *
             */
 
-            console.log("Get Data");
+            // console.log("Get Data");
             var data = <?php echo $RESULT; ?>;         // get menu data
             var order_history = <?php echo $ORDER_HISTORY; ?>;
             /*
@@ -283,8 +278,8 @@
                     __proto__: Object
                 ]
             */
-            console.log(data);
-            console.log(order_history);
+            //console.log(data);
+            //console.log(order_history);
             // the code below is for debug use.
             // $("#order_history_page").append(JSON.stringify(order_history));
             for(var i = 0; i < data.length; i++){
@@ -321,14 +316,13 @@
             var locations = ["MNTL", "BIF", "RAL"];
             for(var i = 0; i < locations.length; i++){
                 var l = locations[i];
-                if(l == pickup_location){
+                if(l === pickup_location){
                     pickup_location_selection_options += "<option selected='selected'>" + pickup_location + "</option>";
                 }
                 else{
                     pickup_location_selection_options += "<option>" + l + "</option>";
                 }
             }
-            
             $("#pickup_location").html(pickup_location_selection_options);
             $("#signup_pickup_location").html(pickup_location_selection_options);
             
@@ -361,7 +355,7 @@
                 var menu = o.menu;
                 var order_id = o.order_id;
                 var order_num = o.order_num;
-                var pickup_location = o.pickup_location;
+                var pickup_location_ = o.pickup_location;
                 var pic = menu.image_path;
                 var intro = menu.introduction;
                 var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
@@ -370,7 +364,7 @@
                 "<h2> order id: " + order_id + "</h2>" + 
                 "<p> menu: " + intro + "</p>" +  
                 "<p> order num: " + order_num + "</p>" + 
-                "<p> pickup location: " + pickup_location + "</p>" +
+                "<p> pickup location: " + pickup_location_ + "</p>" +
                 "<p> total price: " + price + "</p>" + 
             "</li>";
                 
@@ -400,7 +394,7 @@
     $("#submit_button").click(function(){ 
         var menu_id = $("#menu_info").attr("menu_id"); // get menu id  
         // var wechatid = wechatid; // get wechatid
-        var pickup_location = $("#pickup_location option:selected").val(); // get pickup location
+        var pickup_location2 = $("#pickup_location option:selected").val(); // get pickup location
         var order_num = $("#order_num option:selected").val(); // get order num
         $.ajax({
                     url: "./submit_order.php",
@@ -409,7 +403,7 @@
                     // 下面是发送的信息
                     data:{menu_id: menu_id,
                           wechat_id: wechatid,
-                          pickup_location: pickup_location,
+                          pickup_location: pickup_location2,
                           order_num: order_num}
                 }).done(function(data){
                     alert("Submit order successfully!: " + data);
@@ -424,7 +418,7 @@
         var last_name = $("#signup_user_last_name").val();
         var first_name = $("#signup_user_first_name").val();
         var phone = $("#signup_phonenumber").val();
-        var pickup_location = $("#signup_pickup_location option:selected").val();
+        var pickup_location3 = $("#signup_pickup_location option:selected").val();
         // var wechatid = wechatid;
         // 发送到 update_profile.php
         $.ajax({
@@ -435,7 +429,7 @@
             data:{last_name: last_name,
                   first_name: first_name,
                   phone: phone,
-                  pickup_location: pickup_location,
+                  pickup_location: pickup_location3,
                   wechatid: wechatid}
         }).done(function(data){
             alert(data);
@@ -444,7 +438,14 @@
             alert(data);
         })
     })
-    
+    // when change order num, update price
+    $("#order_num").bind("change", function(){
+        var price = $("#menu_price").html();
+        price = parseFloat(price.slice(price.indexOf("$") + 1));
+        var num = parseInt($("#order_num option:selected").val());
+        price = price * num;
+        $("#menu_price").html(" Price: $" + price);
+    })
     
     
     </script>

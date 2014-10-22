@@ -67,7 +67,7 @@ class wechatCallbackapiTest{
                                 else
                                     $current_weekday = date("l"); // 如果比14点往后，算下一天的。
                                 $arr = mysqli_fetch_array($result, MYSQLI_NUM);
-                                $pickup_location = $arr[4];
+                                // $pickup_location = $arr[4];
                                 $is_admin = $arr[5];
                                 $textTpl = "<xml>
                                 <ToUserName><![CDATA[%s]]></ToUserName>
@@ -103,7 +103,7 @@ class wechatCallbackapiTest{
                                                         "news", 
                                                         "Ichiban", 
                                                         "Lunch No Walk, Menu for " . $current_weekday . " " . $current_hour,               
-                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                   "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'&pickup_location='$pickup_location'");
+                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                   "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'");
                                     
                                 }
                 	           echo $resultStr;                                
@@ -113,7 +113,9 @@ class wechatCallbackapiTest{
                             else{ // 结果不存在
                                 $contentStr = "欢迎使用 Lunch No Walk ;)\n" . 
                                               "请您点击以下连接进行注册\n" .
-                                              "<a href=\"www.planetwalley.com/lunch_no_walk/signup_page.php?wechatid='$fromUsername'\">点击这里注册</a>"; 
+                                               "Welcome to use Lunch No Walk;)\n" . 
+                                               "Please click the link below to signup\n" .
+                                              "<a href=\"www.planetwalley.com/lunch_no_walk/signup_page.php?wechatid='$fromUsername'\">点击这里注册/Click here to signup</a>"; 
                                 // 测试
                                 //$contentStr = $contentStr . "\n" . $fromUsername;
                                 //$contentStr = $contentStr . "rows: " . mysqli_num_rows($result);
