@@ -1,7 +1,70 @@
 <html>
     <?php 
-        $wechatid = $_GET["wechatid"];
-        $pickup_location = $_GET["pickup_location"];
+        $wechatid = stripslashes($_GET["wechatid"]);
+        if($wechatid[0] === "'"){
+            $wechatid = substr($wechatid, 1, -1);
+        }
+        $pickup_location = stripslashes($_GET["pickup_location"]);
+        if($pickup_location[0] === "'")
+            $pickup_location = substr($pickup_location, 1, -1);
+        // calculate weekday.
+        $current_hour = date("H"); // 24小时制。
+        if($current_hour >= 14)
+            $current_weekday = date("l", strtotime("+1 day"));
+        else
+            $current_weekday = date("l"); // 如果比14点往后，算下一天的。
+
+        $RESULT = "";
+        // retrieve data from database
+        // try connect to sql
+        $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库, connect to sql
+        if (mysqli_connect_errno()){
+            $RESULT = "Cannot connect to MySQL: " . mysqli_connect_error();
+            echo $RESULT;
+            exit;
+        }
+        // get menus today
+        $query_content = "SELECT * FROM meals WHERE week_day='$current_weekday'";
+        $query_result = mysqli_query($cons, $query_content);
+
+        if($query_result){
+            $my_array = array(); 
+            while($php_arr = mysqli_fetch_array($query_result, /*MYSQLI_NUM*/MYSQLI_ASSOC)){
+                array_push($my_array, $php_arr);
+            }
+            $js_array = json_encode($my_array);
+            $RESULT = $js_array;
+        }
+        else{
+            $RESULT = "Cannot connect to MySQL";
+            exit;
+        }
+
+        // get user order
+        $query_content = "SELECT * FROM meal_order WHERE wechat_id='$wechatid'";
+        $query_result = mysqli_query($cons, $query_content);
+        if($query_result){
+            $my_array = array();
+            while($php_arr = mysqli_fetch_array($query_result, MYSQLI_ASSOC)){
+                $menu_id = $php_arr["menu_id"]; // get menu_id
+                // retrieve menu according to menu_id
+
+                $query_for_menu = "SELECT * FROM meals WHERE id='$menu_id'";
+                $query_for_menu = mysqli_query($cons, $query_for_menu);
+
+                $menu_data = mysqli_fetch_array($query_for_menu, MYSQLI_ASSOC);
+
+                // add menu property to $php_arr.
+                $php_arr["menu"] = $menu_data;
+                array_push($my_array, $php_arr);
+            }
+            $js_array = json_encode($my_array);
+            $ORDER_HISTORY = $js_array;
+        }
+        else{
+            $ORDER_HISTORY = "Cannot connect to MySQL";
+            exit;
+        }
     ?>
     <head>
         <title>
@@ -109,11 +172,15 @@
     <script>
         // global variable
         var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
-        if(wechatid[0] == "'" || wechatid[0] == '"') 
-                wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
+        if(wechatid[0] === "'" || wechatid[0] === "\""){
+            wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
+        }
         var pickup_location = "<?php echo $pickup_location; ?>"
-        if(pickup_location[0] == "'" || pickup_location[0] == "\"")
-                pickup_location = pickup_location.slice(1, pickup_location.length - 1);
+        if(pickup_location[0] == "'" || pickup_location[0] == "\""){
+            pickup_location = pickup_location.slice(1, pickup_location.length - 1);
+        }
+        console.log(wechatid);
+        console.log(pickup_location);
         var current_url = document.URL;
         $(document).ready(function(){
             // setup time
@@ -134,65 +201,7 @@
             * use php to read menus from server(meals)
             *
             */
-            
-            <?php
-                // calculate weekday.
-                $current_hour = date("H"); // 24小时制。
-                if($current_hour >= 14)
-                    $current_weekday = date("l", strtotime("+1 day"));
-                else
-                    $current_weekday = date("l"); // 如果比14点往后，算下一天的。
 
-                $RESULT = "";
-                // retrieve data from database
-                // try connect to sql
-                $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库, connect to sql
-                if (mysqli_connect_errno()){
-                    $RESULT = "Cannot connect to MySQL: " . mysqli_connect_error();
-                    echo $RESULT;
-                    exit;
-                }
-                // get menus today
-                $query_content = "SELECT * FROM meals WHERE week_day='$current_weekday'";
-                $query_result = mysqli_query($cons, $query_content);
-
-                if($query_result){
-                    $my_array = array(); 
-                    while($php_arr = mysqli_fetch_array($query_result, /*MYSQLI_NUM*/MYSQLI_ASSOC)){
-                        array_push($my_array, $php_arr);
-                    }
-                    $js_array = json_encode($my_array);
-                    $RESULT = $js_array;
-                }
-                else{
-                    $RESULT = "Cannot connect to MySQL";
-                }
-
-                // get user order
-                $query_content = "SELECT * FROM meal_order WHERE wechat_id='$wechatid'";
-                $query_result = mysqli_query($cons, $query_content);
-                if($query_result){
-                    $my_array = array();
-                    while($php_arr = mysqli_fetch_array($query_result, MYSQLI_ASSOC)){
-                        $menu_id = $php_arr["menu_id"]; // get menu_id
-                        // retrieve menu according to menu_id
-                        
-                        $query_for_menu = "SELECT * FROM meals WHERE id='$menu_id'";
-                        $query_for_menu = mysqli_query($cons, $query_for_menu);
-                        
-                        $menu_data = mysqli_fetch_array($query_for_menu, MYSQLI_ASSOC);
-                        
-                        // add menu property to $php_arr.
-                        $php_arr["menu"] = $menu_data;
-                        array_push($my_array, $php_arr);
-                    }
-                    $js_array = json_encode($my_array);
-                    $ORDER_HISTORY = $js_array;
-                }
-                else{
-                    $ORDER_HISTORY = "Cannot connect to MySQL";
-                }
-            ?>
             console.log("Get Data");
             var data = <?php echo $RESULT; ?>;         // get menu data
             var order_history = <?php echo $ORDER_HISTORY; ?>;
@@ -226,6 +235,8 @@
             */
             console.log(data);
             console.log(order_history);
+            // the code below is for debug use.
+            // $("#order_history_page").append(JSON.stringify(order_history));
             for(var i = 0; i < data.length; i++){
                 var d = data[i];
                 var pic = d.image_path;
@@ -269,7 +280,6 @@
             }
             
             $("#pickup_location").html(pickup_location_selection_options);
-            
             
             
             // set order history.  $("#order_history")
