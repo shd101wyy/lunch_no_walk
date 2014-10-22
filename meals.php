@@ -200,6 +200,15 @@
                 <button id="submit_button"> Submit </button>
             </div>
         </div>
+        <!-- Delete Order -->
+        <div data-role="page" id="delete_order" data-dialog="true">
+          <div data-role="main" class="ui-content">
+          <h3>Delete Order</h3>
+            <p>Are you sure you want to delete this order?</p>
+            <a href="#" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini" id='delete_order_button'>Delete</a>
+            <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
+          </div>
+        </div> 
     </body>
     
     <script>
@@ -359,17 +368,29 @@
                 var pic = menu.image_path;
                 var intro = menu.introduction;
                 var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
-                var content = 
-            "<li>" + 
-                "<h2> order id: " + order_id + "</h2>" + 
-                "<p> menu: " + intro + "</p>" +  
-                "<p> order num: " + order_num + "</p>" + 
-                "<p> pickup location: " + pickup_location_ + "</p>" +
-                "<p> total price: " + price + "</p>" + 
+                var content;
+                if(complete == 1){ // completed order
+                    content = 
+          "<li data-theme='b'>" + 
+                    "<a href='#'>"+
+                    "<img src='"+pic+"'>" +
+                    "<h2>Completed Order: "+order_id+"</h2>" +
+                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
+                    "</a>" + 
             "</li>";
-                
-                $("#order_history_list").append(content);
-                
+                }
+                else{ // incomplete order
+                    content = 
+            "<li >" + 
+                    "<a href='#'>"+
+                    "<img src='"+pic+"'>" +
+                    "<h2>Incomplete Order: "+order_id+"</h2>" +
+                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
+                    "</a>" + 
+                    "<a onclick=\"click_split_button_delete('" + order_id + "');\" href='#delete_order'' data-transition='pop'' data-icon='delete'>Delete </a>" +
+            "</li>";
+                }                
+                $("#order_history_list").append(content);   
             }
             
             // setup change profile page.
@@ -446,7 +467,27 @@
         price = price * num;
         $("#menu_price").html(" Price: $" + price);
     })
-    
+    // click delete button right side of the list
+    var click_split_button_delete = function(id){
+        $("#delete_order").attr("delete_id", id); // save the id we want to delete
+    }
+    // delete order
+    $("#delete_order_button").click(function(){
+        var delete_id = $("#delete_order").attr("delete_id"); // get order id that we want to delete
+        $.ajax({
+            url: "user_cancel_order.php",
+            async: false,
+            type: "POST",
+            // 下面是发送的信息
+            data:{order_id: delete_id}
+        }).done(function(data){
+            alert(data);
+            window.location.replace(current_url); // reload page
+        }).fail(function(data){
+            alert(data);
+        })
+        
+    })
     
     </script>
 </html>

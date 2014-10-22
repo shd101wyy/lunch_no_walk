@@ -28,6 +28,7 @@
                                                '$pickup_location');";
     if(!mysqli_query($cons, $query_content)){
         echo "MySQL Error: " . mysqli_error($cons);
+        exit;
     }
     echo "Submit Order ";
 ?>
