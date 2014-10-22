@@ -438,7 +438,7 @@
                   pickup_location: pickup_location,
                   wechatid: wechatid}
         }).done(function(data){
-            alert("Profile update successfully! ;)");
+            alert(data);
             window.location.replace(current_url); // reload page
         }).fail(function(data){
             alert(data);

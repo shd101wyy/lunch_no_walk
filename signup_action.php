@@ -21,5 +21,5 @@
                                                 '$pickup_location',
                                                 0)";
     mysqli_query($cons, $query_content);
-    echo "注册成功";
+    echo "Signup Successfully!";
 ?>
