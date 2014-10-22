@@ -65,6 +65,17 @@
             $ORDER_HISTORY = "Cannot connect to MySQL";
             exit;
         }
+
+        // get user info according to wechat id 
+        $query_content = "SELECT * FROM user WHERE wechatid='$wechatid'";
+        $query_result = mysqli_query($cons, $query_content);
+        if($query_result){
+            $USER_INFO = json_encode(mysqli_fetch_array($query_result, MYSQLI_ASSOC));
+        }
+        else{
+            $USER_INFO = "\"Cannot connect to MySQL\"" . $query_content;
+        }
+        
     ?>
     <head>
         <title>
@@ -123,6 +134,30 @@
                 <p>
                     Allow User to change personal information, like pickup location.
                 </p>
+                <!-- <h3> 请填写下面信息 </h3>
+                Change information
+                -->
+                <!-- 姓 -->
+                <label for="signup_user_last_name"> Last name: </label>
+                <input type="text" id="signup_user_last_name" data-clear-btn="true">
+                <!-- 名 --> 
+                <label for="signup_user_first_name"> First name: </label>
+                <input type="text" id="signup_user_first_name" data-clear-btn="true">             
+                <!-- <label for="signup_username">姓名:</label>
+                <input type="text" id="signup_username" data-clear-btn="true"> -->
+                <!-- 电话 -->
+                <label for="signup_phonenumber"> Cellphone number:</label>
+                <input type="text" id="signup_phonenumber" data-clear-btn="true" name="signup_phonenumber">
+                
+                <!-- 下拉菜单 -->
+                <fieldset class="ui-field-contain">
+                    <label for="signup_pickup_location"> Select one of the location most close to you: </label>
+                    <select name="signup_pickup_location" id="signup_pickup_location">
+                      <!-- Location selections here -->
+                    </select>
+                </fieldset>
+                <br>
+                <button id="change_user_profile" data-inline="true">Update Profile</button> 
             </div>
         </div>
         
@@ -136,7 +171,7 @@
             </div>   
             <div data-role="main" class="ui-content">
                 <img id="menu_pic" src="images.jpeg" width="100%", height="40%">
-                <p> 宫爆鸡丁， 蒜蓉生姜菜 </p>
+                <b id="menu_intro"> 宫爆鸡丁， 蒜蓉生姜菜 </b>
                 <!-- 下拉菜单 pickup location -->
                 <fieldset class="ui-field-contain">
                     <label for="pickup_location"> Select one of the location most close to you: </label>
@@ -179,8 +214,23 @@
         if(pickup_location[0] == "'" || pickup_location[0] == "\""){
             pickup_location = pickup_location.slice(1, pickup_location.length - 1);
         }
+        
+        /*
+        * user_info is in format like:
+        [Log] Object (meals.php, line 142)
+                administrator: "1"
+                first_name: "Yiyi"
+                last_name: "Wang"
+                phone: "2176499936"
+                pickup_location: "BIF"
+                wechatid: "owHwut4vD3-Gf3WvMKKMBS-LFLIk"
+                __proto__: Object
+
+        */
+        var user_info = <?php echo $USER_INFO; ?>;
         console.log(wechatid);
         console.log(pickup_location);
+        console.log(user_info);
         var current_url = document.URL;
         $(document).ready(function(){
             // setup time
@@ -254,7 +304,7 @@
                 */
                 var content = 
             "<li>" + 
-                "<a onclick=\"check_menu('Meal " + (1 + i) + "', '" + pic + "', " + price + ", '" + id + "')\" " + 
+                "<a onclick=\"check_menu('Meal " + (1 + i) + "', '" + pic + "', " + price + ", '" + id + "', '" + intro + "')\" " + 
                     "href='#menu_info' data-transition='slidefade'><img src='" + pic + "'>" + 
                     "<h2>Meal " + (1 + i) + "</h2>" + 
                     "<p>" + intro + "</p>" + 
@@ -280,7 +330,7 @@
             }
             
             $("#pickup_location").html(pickup_location_selection_options);
-            
+            $("#signup_pickup_location").html(pickup_location_selection_options);
             
             // set order history.  $("#order_history")
             for(var i = 0; i < order_history.length; i++){
@@ -328,17 +378,22 @@
                 
             }
             
+            // setup change profile page.
+            $("#signup_user_last_name").val(user_info.last_name);
+            $("#signup_user_first_name").val(user_info.first_name);
+            $("#signup_phonenumber").val(user_info.phone);
             
             // refresh listview
             $('ul').listview('refresh');
         })
     // check menu information
     // customers can buy meal from it.
-    var check_menu = function(menu_num, pic, price, id){
+    var check_menu = function(menu_num, pic, price, id, intro){
         $("#menu_num").html(menu_num);
         $("#menu_pic").attr("src", pic);
         $("#menu_price").html(" Price: $" + price);
         $("#menu_info").attr("menu_id", id);
+        $("#menu_intro").html(intro);
     }    
     // clicked submit button
     // 下订单
@@ -362,8 +417,33 @@
                 }).fail(function(data){
                     alert(data);
                 });
-
     });
+        
+    // update user profile
+    $("#change_user_profile").click(function(){
+        var last_name = $("#signup_user_last_name").val();
+        var first_name = $("#signup_user_first_name").val();
+        var phone = $("#signup_phonenumber").val();
+        var pickup_location = $("#signup_pickup_location option:selected").val();
+        // var wechatid = wechatid;
+        // 发送到 update_profile.php
+        $.ajax({
+            url: "update_profile.php",
+            async: false,
+            type: "POST",
+            // 下面是发送的信息
+            data:{last_name: user_last_name,
+                  first_name: user_first_name,
+                  phone: phonenumber,
+                  pickup_location: pickup_location,
+                  wechatid: wechatid}
+        }).done(function(data){
+            alert("Profile update successfully! ;)");
+            window.location.replace(current_url); // reload page
+        }).fail(function(data){
+            alert(data);
+        })
+    })
     
     
     
