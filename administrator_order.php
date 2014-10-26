@@ -29,10 +29,16 @@
                 </h1>
             </div>  
             <div data-role="main" class="ui-content">
-                <ul data-role="listview" data-inset="true" id="order_history_list_incomplete">
+                <form class="ui-filterable">
+                    <input id="myFilter1" data-type="search" placeholder="search">
+                </form>
+                <ul data-role="listview" data-inset="true" id="order_history_list_incomplete" data-filter="true" data-input="#myFilter1">
                     <!-- Show user incomplete order here -->
                 </ul>
-                <ul data-role="listview" data-inset="true" id="order_history_list_complete">
+                <form class="ui-filterable">
+                    <input id="myFilter2" data-type="search" placeholder="search">
+                </form>
+                <ul data-role="listview" data-inset="true" id="order_history_list_complete" data-filter="true" data-input="#myFilter2">
                     <!-- Show user completed order here -->
                 </ul>
             </div>

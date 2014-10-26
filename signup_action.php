@@ -19,7 +19,8 @@
                                                 '$first_name',
                                                 '$phone',
                                                 '$pickup_location',
-                                                0)";
+                                                0,   
+                                                0)";  
     mysqli_query($cons, $query_content);
     echo "Signup Successfully!";
 ?>
