@@ -13,6 +13,7 @@
     $pickup_location = $_POST["pickup_location"];
     $order_num = $_POST["order_num"];
     $processed = 0; // not processed, incomplete.
+    $order_date = $_POST["order_date"];
     $order_id = uniqid();
 
     $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库
@@ -25,7 +26,8 @@
                                                '$menu_id',
                                                '$order_num',
                                                '$processed',
-                                               '$pickup_location');";
+                                               '$pickup_location',
+                                               '$order_date');";
     if(!mysqli_query($cons, $query_content)){
         echo "MySQL Error: " . mysqli_error($cons);
         exit;

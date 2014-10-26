@@ -39,7 +39,7 @@
         }
 
         // get user order
-        $query_content = "SELECT * FROM meal_order WHERE wechat_id='$wechatid'";
+        $query_content = "SELECT * FROM meal_order WHERE wechat_id='$wechatid' ORDER BY order_date DESC";
         $query_result = mysqli_query($cons, $query_content);
         if($query_result){
             $my_array = array();
@@ -121,9 +121,13 @@
                     You can cancel order here by clicking crossing button.
                 </p>
                 
-                <ul data-role="listview" data-inset="true" id="order_history_list">
-                    <!-- Show user order here -->
+                <ul data-role="listview" data-inset="true" id="order_history_list_incomplete">
+                    <!-- Show user incomplete order here -->
                 </ul>
+                <ul data-role="listview" data-inset="true" id="order_history_list_complete">
+                    <!-- Show user completed order here -->
+                </ul>
+                
             </div>
         </div>
         <!-- Personal Settings -->
@@ -362,6 +366,7 @@
                 
                 var complete = o.complete;
                 var menu = o.menu;
+                var order_date = new Date(parseInt(o.order_date));  // change order date from timestamp to
                 var order_id = o.order_id;
                 var order_num = o.order_num;
                 var pickup_location_ = o.pickup_location;
@@ -375,9 +380,10 @@
                     "<a href='#'>"+
                     "<img src='"+pic+"'>" +
                     "<h2>Completed Order: "+order_id+"</h2>" +
-                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
+                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
                     "</a>" + 
             "</li>";
+                    $("#order_history_list_complete").append(content);  
                 }
                 else{ // incomplete order
                     content = 
@@ -385,12 +391,12 @@
                     "<a href='#'>"+
                     "<img src='"+pic+"'>" +
                     "<h2>Incomplete Order: "+order_id+"</h2>" +
-                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
+                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
                     "</a>" + 
                     "<a onclick=\"click_split_button_delete('" + order_id + "');\" href='#delete_order'' data-transition='pop'' data-icon='delete'>Delete </a>" +
             "</li>";
+                    $("#order_history_list_incomplete").append(content);   
                 }                
-                $("#order_history_list").append(content);   
             }
             
             // setup change profile page.
@@ -425,7 +431,8 @@
                     data:{menu_id: menu_id,
                           wechat_id: wechatid,
                           pickup_location: pickup_location2,
-                          order_num: order_num}
+                          order_num: order_num,
+                          order_date: (+new Date).toString()}
                 }).done(function(data){
                     alert("Submit order successfully!: " + data);
                     window.location.replace(current_url); // reload page

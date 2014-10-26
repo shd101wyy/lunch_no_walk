@@ -54,6 +54,7 @@
                 </h1>
             </div>
             <div data-role="main" class="ui-content" id="administrator_page_content">
+                <a href="administrator_order.php" rel="external"> Check Order </a>
                 <ul data-role="listview" data-inset="true" id="my-list">
                 </ul> 
             </div>  
