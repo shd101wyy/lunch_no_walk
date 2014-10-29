@@ -96,6 +96,7 @@
             </div> -->
             <div data-role="main" class="ui-content">
                 <h3 id="time"></h3>
+                <h3 id="rest_money">0</h3>
                 <ul data-role="listview" data-inset="true" id="menu_list">
                     <!-- Show menu information here -->
                 </ul>
@@ -253,7 +254,11 @@
             weekday[6] = "Saturday";
             var n = weekday[(d.getHours() >= 14) ? ((d.getDay() + 1) % 7) : d.getDay()];
             $("#time").html(n + "'s Menus: <br>")
+            /*
+            * 显示余额
+            */ 
             
+            $("#rest_money").html("Money in Account: $"+user_info.money);
             /*
             * 
             * use php to read menus from server(meals)
