@@ -116,7 +116,7 @@
                         ]
                 *
                 */
-                console.log(o);
+                // console.log(o);
                 var complete = o.complete;
                 var menu = o.menu;
                 var order_date = new Date(parseInt(o.order_date)); // change order date from timestamp to human readable
@@ -127,6 +127,7 @@
                 var intro = menu.introduction;
                 var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
                 var wechatid = o.wechat_id;
+                var user = o.user;
                 var content;
                 if(complete == 1){ // completed order
                     content = 
@@ -136,7 +137,7 @@
                     "<h2>Completed Order: "+order_id+"</h2>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
                     "<p> Last Name: <b>" + o.user.last_name + "</b> First Name: <b>" + o.user.first_name + "</b></p><br>" + 
-                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='1' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+");\"> Check </button>"
+                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='1' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Revoke:Pay with Balance </button>"
                     "</a>" + 
             "</li>";
                     $("#order_history_list_complete").append(content);  
@@ -149,7 +150,7 @@
                     "<h2>Incomplete Order: "+order_id+"</h2>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
                     "<p> Last Name: <b>" + o.user.last_name + "</b> First Name: <b>" + o.user.first_name + "</b></p><br>" + 
-                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+");\"> Check </button>" +
+                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Pay with Balance </button>" +
                     "</a>" +
             "</li>";
                     $("#order_history_list_incomplete").append(content);  
@@ -162,7 +163,12 @@
             //$("input[type='checkbox']").checkboxradio();
             //$("input[type='checkbox']").prop("checked", false).checkboxradio("refresh");      
         })
-        var clickCheck = function(id, wechatid, price){
+        var clickCheck = function(id, wechatid, price, user_money){
+            
+            if(user_money < 0){
+                alert("User account less than 0$, please pay with cash\n账户余额不足，请现金充值支付");
+                return;
+            }            
             console.log("clickCheck: " + id + " " + wechatid);
             id = "#" + id;
             var complete = parseInt($(id).attr("complete"));
@@ -182,7 +188,7 @@
                     data:{order_id : order_id, 
                           complete: complete,
                           wechatid: wechatid,
-                         price: price}
+                          price: price}
                 }).done(function(data){
                     console.log(data);
                     if(data == "Success")

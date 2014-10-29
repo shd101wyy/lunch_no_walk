@@ -34,8 +34,10 @@
         echo "Failed";
         exit;
     }   
-    // set to complete, decrement user's money
+    // set to complete, No decrement user's money
+    // as user money already decremented when submitting order.
     if($complete){  
+        /*
         $query = "UPDATE user SET money=money-'$required_money'
                               WHERE wechatid='$wechatid'";
         $result = mysqli_query($cons, $query);
@@ -45,6 +47,8 @@
         else{
             echo "Failed";
         } 
+        */
+        echo "Success";
     }
     else{ // increase user's money
         $query = "UPDATE user SET money=money+'$required_money'
