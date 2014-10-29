@@ -14,6 +14,7 @@
     $order_num = $_POST["order_num"];
     $processed = 0; // not processed, incomplete.
     $order_date = $_POST["order_date"];
+    $user_rest_money = $_POST["user_rest_money"];
     $order_id = uniqid();
 
     $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库
@@ -21,6 +22,7 @@
         echo "Cannot connect to MySQL: " . mysqli_connect_error();
         exit;
     }
+    // add meal order
     $query_content = "INSERT INTO meal_order VALUES('$order_id',
                                                '$wechat_id',
                                                '$menu_id',
@@ -28,6 +30,15 @@
                                                '$processed',
                                                '$pickup_location',
                                                '$order_date');";
+    if(!mysqli_query($cons, $query_content)){
+        echo "MySQL Error: " . mysqli_error($cons);
+        exit;
+    }
+
+    // update user rest money
+    $query_content = "UPDATE user SET money='$user_rest_money' 
+                                  WHERE wechatid='$wechat_id'";
+
     if(!mysqli_query($cons, $query_content)){
         echo "MySQL Error: " . mysqli_error($cons);
         exit;

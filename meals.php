@@ -419,15 +419,28 @@
         $("#menu_pic").attr("src", pic);
         $("#menu_price").html(" Price: $" + price);
         $("#menu_info").attr("menu_id", id);
+        $("#menu_info").attr("menu_price", price);
         $("#menu_intro").html(intro);
     }    
     // clicked submit button
     // 下订单
     $("#submit_button").click(function(){ 
         var menu_id = $("#menu_info").attr("menu_id"); // get menu id  
+        var menu_price = $("#menu_info").attr("menu_price"); // get menu price
+        
+
         // var wechatid = wechatid; // get wechatid
         var pickup_location2 = $("#pickup_location option:selected").val(); // get pickup location
         var order_num = $("#order_num option:selected").val(); // get order num
+        
+        var total_price = menu_price * order_num; // 订餐总共需要花费的金额
+        var user_money = user_info.money;         // user money
+        
+        if(user_money < 0){ // 余额不足, 不能订餐。
+            alert("Not enough money in your account\n您的账户余额不足");
+            return;
+        }        
+        
         $.ajax({
                     url: "./submit_order.php",
                     async: false,
@@ -437,7 +450,9 @@
                           wechat_id: wechatid,
                           pickup_location: pickup_location2,
                           order_num: order_num,
-                          order_date: (+new Date).toString()}
+                          order_date: (+new Date).toString(), 
+                          user_rest_money: user_money - total_price  // 账户余额
+                         }
                 }).done(function(data){
                     alert("Submit order successfully!: " + data);
                     window.location.replace(current_url); // reload page
