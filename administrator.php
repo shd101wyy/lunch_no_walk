@@ -9,7 +9,7 @@
             echo $RESULT;
             exit;
         }
-        $query_content = "SELECT * FROM meals";
+        $query_content = "SELECT * FROM meals WHERE available=1";
         $query_result = mysqli_query($cons, $query_content);
         
         if($query_result){

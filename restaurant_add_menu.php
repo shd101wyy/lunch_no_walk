@@ -52,7 +52,8 @@
                                                      '$price',
                                                      '$target_dir',
                                                      '$week_day',
-                                                     '$id')";
+                                                     '$id',
+                                                     1)";
         mysqli_query($cons, $query_content);
         $RESULT = "Done";
     ?>

@@ -6,7 +6,7 @@
         echo "Cannot connect to MySQL: " . mysqli_connect_error();
         exit;
     }
-    $query_content = "DELETE FROM meals WHERE id='$delete_id'"; // delete that order.
+    $query_content = "UPDATE meals SET available=0 WHERE id='$delete_id'"; // delete that order, set as not available.
     mysqli_query($cons, $query_content);
     echo "Delete Successfully: " . $delete_id;
 
