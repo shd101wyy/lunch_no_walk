@@ -398,7 +398,7 @@
                     "<h2>Incomplete Order: "+order_id+"</h2>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
                     "</a>" + 
-                    "<a onclick=\"click_split_button_delete('" + order_id + "');\" href='#delete_order'' data-transition='pop'' data-icon='delete'>Delete </a>" +
+                    "<a onclick=\"click_split_button_delete('" + order_id + "', "+price+" );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
             "</li>";
                     $("#order_history_list_incomplete").append(content);   
                 }                
@@ -495,18 +495,20 @@
         $("#menu_price").html(" Price: $" + price);
     })
     // click delete button right side of the list
-    var click_split_button_delete = function(id){
+    var click_split_button_delete = function(id, total_price){
         $("#delete_order").attr("delete_id", id); // save the id we want to delete
+        $("#delete_order").attr("total_price", total_price); // save total price of that meal
     }
-    // delete order
+    // cancel order
     $("#delete_order_button").click(function(){
         var delete_id = $("#delete_order").attr("delete_id"); // get order id that we want to delete
+        var total_price = $("#delete_order").attr("total_price");
         $.ajax({
             url: "user_cancel_order.php",
             async: false,
             type: "POST",
             // 下面是发送的信息
-            data:{order_id: delete_id}
+            data:{order_id: delete_id, wechatid:wechatid, add_money: total_price}
         }).done(function(data){
             alert(data);
             window.location.replace(current_url); // reload page
