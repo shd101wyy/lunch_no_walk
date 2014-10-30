@@ -151,6 +151,7 @@
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
                     "<p> Last Name: <b>" + o.user.last_name + "</b> First Name: <b>" + o.user.first_name + "</b></p><br>" + 
                     "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Pay with Balance </button>" +
+                    "<button onclick=\"payWithcash('"+wechatid+"')\">Pay with Cash </button>" + 
                     "</a>" +
             "</li>";
                     $("#order_history_list_incomplete").append(content);  
@@ -196,6 +197,28 @@
                     else if (data == "Not enough money"){
                         alert(data);
                     }
+                    else alert(data);
+                }).fail(function(data){
+                    alert(data);
+                });
+        }
+        
+        var payWithcash = function(wechatid){
+            console.log(wechatid);
+            var money = prompt("How much to pay?");
+            money = parseFloat(money);
+            console.log(money);
+            $.ajax({
+                    url: "./admin_pay_with_cash.php",
+                    async: false,
+                    type: "POST",
+                    // 下面是发送的信息
+                    data:{wechatid: wechatid,
+                          money: money}
+                }).done(function(data){
+                    console.log(data);
+                    if(data == "Success")
+                        window.location.replace(current_url); // reload page
                     else alert(data);
                 }).fail(function(data){
                     alert(data);
