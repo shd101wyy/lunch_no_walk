@@ -128,6 +128,7 @@
                 var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
                 var wechatid = o.wechat_id;
                 var user = o.user;
+                var phone = user.phone;
                 var content;
                 if(complete == 1){ // completed order
                     content = 
@@ -135,8 +136,9 @@
                     "<a href='#'>"+
                     "<img src='"+pic+"'>" +
                     "<h2>Completed Order: "+order_id+"</h2>" +
-                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
-                    "<p> Last Name: <b>" + o.user.last_name + "</b> First Name: <b>" + o.user.first_name + "</b></p><br>" + 
+                    "<h3> " + user.first_name + " " + user.last_name +"</h3>" +
+                    "<p>" + phone + "</p>" +
+                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" + 
                     "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='1' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Revoke:Pay with Balance </button>"
                     "</a>" + 
             "</li>";
@@ -148,8 +150,9 @@
                     "<a href='#'>"+
                     "<img src='"+pic+"'>" +
                     "<h2>Incomplete Order: "+order_id+"</h2>" +
+                    "<h3> " + user.first_name + " " + user.last_name +"</h3>" +
+                    "<p>" + phone + "</p>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
-                    "<p> Last Name: <b>" + o.user.last_name + "</b> First Name: <b>" + o.user.first_name + "</b></p><br>" + 
                     "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Pay with Balance </button>" +
                     "<button onclick=\"payWithcash('"+wechatid+"')\">Pay with Cash </button>" + 
                     "</a>" +
