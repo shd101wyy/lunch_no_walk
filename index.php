@@ -101,8 +101,8 @@ class wechatCallbackapiTest{
                                                         $toUsername, 
                                                         $time, 
                                                         "news", 
-                                                        "Ichiban", 
-                                                        "Lunch No Walk, Menu for " . $current_weekday . " " . $current_hour,               
+                                                        "Lunch no Walk served by Ichiban", 
+                                                        "Menu for " . $current_weekday /*. " " . $current_hour*/ . "\nClick me to order",               
                                                 "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                   "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'");
                                     
                                 }
