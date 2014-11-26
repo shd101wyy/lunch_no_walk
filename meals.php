@@ -263,6 +263,14 @@
     
     
     <script>
+        /*
+        // hide wechat tool bar
+        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            WeixinJSBridge.call('hideToolbar');
+            WeixinJSBridge.call('hideOptionMenu');
+        });
+        */
+        
         // global variable
         var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
         if(wechatid[0] === "'" || wechatid[0] === "\""){
@@ -516,7 +524,13 @@
     })
     $("#close_thx_for_sharing").click(function(){
         window.location.replace(current_url.slice(0, current_url.indexOf("#"))); // reload page
-    })
+    });
+    /*
+    // this doesn't work
+    $("#thx_for_sharing").on("pagehide", function(){
+        window.location.replace(current_url); // reload page
+    });
+    */
     $("#share_link").click(function(){
         history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#thx_for_sharing");
         window.location.assign("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
