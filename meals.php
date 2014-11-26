@@ -97,6 +97,18 @@
             <div data-role="main" class="ui-content">
                 <h3 id="time"></h3>
                 <h3 id="rest_money">0</h3>
+                <a href="#faq">FAQ 疑问解答</a> <br><br>
+                
+                <!-- 
+                    link to official account 
+                    链接到公众账号
+
+                    
+                    tutorial is here(教程在这个网站) http://jingyan.baidu.com/article/2d5afd69efd2cf85a3e28e6b.html
+                -->
+                <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd">lunch no walk </a>
+
+                
                 <ul data-role="listview" data-inset="true" id="menu_list">
                     <!-- Show menu information here -->
                 </ul>
@@ -214,6 +226,27 @@
             <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
           </div>
         </div> 
+        
+        <!-- FAQ page -->
+        <div data-role="page" id="faq"> 
+            <div data-role="header">
+                <h1>
+                    FAQ 疑难解答
+                </h1>
+            </div>   
+            <div data-role="main" class="ui-content">
+                <p>在这里输入faq内容</p>
+            </div>
+        </div>
+        
+        <!-- Order success page -->
+        <div data-role="page" id="submit_success_page">
+            <div data-role="main" class="ui-content">
+                <h3> Submit Order Successfully </h3>
+                <p>Share <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd">this link and click me</a> to <b>Moments</b> to get free drinks</p>
+                <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" id="close_submit_success_page">Close</a>
+            </div>
+        </div>
     </body>
     
     <script>
@@ -454,12 +487,20 @@
                           user_rest_money: user_money - total_price  // 账户余额
                          }
                 }).done(function(data){
-                    alert("Submit order successfully!: " + data);
-                    window.location.replace(current_url); // reload page
+                    //alert("Submit order successfully!: " + data);
+                    $.mobile.changePage("#submit_success_page"); // navigate to submit_success_page and ask user to share.
                 }).fail(function(data){
                     alert(data);
                 });
     });
+        
+    // close submit_success_page
+    /*$("#submit_success_page").bind("pagehide", function(){
+        window.location.replace(current_url); // reload page
+    })*/
+    $("#close_submit_success_page").click(function(){
+        window.location.replace(current_url); // reload page
+    })
         
     // update user profile
     $("#change_user_profile").click(function(){
