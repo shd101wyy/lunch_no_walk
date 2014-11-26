@@ -254,7 +254,8 @@
                 <h1>Thanks for sharing ! ;)</h1>
                 <!--<a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini"
                    id="close_thx_for_sharing">Close</a>-->
-                <button id="close_thx_for_sharing">Close!</button>
+                <p>(Dont click buttons above)</p>
+                <button id="close_thx_for_sharing">Click me to Close!</button>
             </div>
         </div>
         
