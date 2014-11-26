@@ -247,6 +247,17 @@
                 <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" id="close_submit_success_page">Close</a>
             </div>
         </div>
+        
+        <!-- Thx for sharing -->
+        <div data-role="page" id="thx_for_sharing">
+            <div data-role="main" class="ui-content">
+                <h1>Thanks for sharing ! ;)</h1>
+                <!--<a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini"
+                   id="close_thx_for_sharing">Close</a>-->
+                <button id="close_thx_for_sharing">Close!</button>
+            </div>
+        </div>
+        
     </body>
     
     
@@ -503,7 +514,11 @@
     $("#close_submit_success_page").click(function(){
         window.location.replace(current_url); // reload page
     })
+    $("#close_thx_for_sharing").click(function(){
+        window.location.replace(current_url.slice(0, current_url.indexOf("#"))); // reload page
+    })
     $("#share_link").click(function(){
+        history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#thx_for_sharing");
         window.location.assign("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
     });
     /*
