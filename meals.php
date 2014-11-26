@@ -243,11 +243,13 @@
         <div data-role="page" id="submit_success_page">
             <div data-role="main" class="ui-content">
                 <h3> Submit Order Successfully </h3>
-                <p>Share <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd">this link and click me</a> to <b>Moments</b> to get free drinks</p>
+                <p>Share <a id="share_link">this link and click me</a> to <b>Moments</b> to get free drinks</p>
                 <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" id="close_submit_success_page">Close</a>
             </div>
         </div>
     </body>
+    
+    
     
     <script>
         // global variable
@@ -501,7 +503,14 @@
     $("#close_submit_success_page").click(function(){
         window.location.replace(current_url); // reload page
     })
-        
+    $("#share_link").click(function(){
+        window.location.assign("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
+    });
+    /*
+    $("#submit_success_page").on("pageshow", function(){
+        alert("Show Page");
+    });
+    */  
     // update user profile
     $("#change_user_profile").click(function(){
         var last_name = $("#signup_user_last_name").val();
