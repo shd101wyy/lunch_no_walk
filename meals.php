@@ -323,7 +323,8 @@
         <!-- Thx for sharing -->
         <div data-role="page" id="thx_for_sharing">
             <div data-role="main" class="ui-content">
-                <h1>Thanks for sharing ! ;)</h1>
+                <h1>Thanks for ordering with us ! ;)</h1>
+                <h1>谢谢惠顾, 祝您用餐愉快</h1>
                 <!--<a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini"
                    id="close_thx_for_sharing">Close</a>-->
                 <p>(Dont click buttons above)</p>
@@ -537,7 +538,9 @@
             $("#signup_phonenumber").val(user_info.phone);
             
             // refresh listview
-            $('ul').listview('refresh');
+            //$("#order_history_list_complete").listview('refresh');
+            //$('#order_history_list_incomplete').listview('refresh');
+            $('ul').listview().listview('refresh');
         })
     // check menu information
     // customers can buy meal from it.
@@ -581,7 +584,26 @@
                           user_rest_money: user_money - total_price  // 账户余额
                          }
                 }).done(function(data){
-                    //alert("Submit order successfully!: " + data);
+                    if(data === "Failed") return; // failed to upload data to mysql 
+                    var order_id = data; 
+                    var pic = $("#menu_pic").attr("src");
+                    var intro = $("#menu_intro").html();
+                    // add current order to $("#order_history_list_complete")
+                    var content =  "<li >" + 
+                    "<a href='#'>"+
+                        "<img src='"+pic+"'>" +
+                        "<h2>Incomplete Order: "+order_id+"</h2>" +
+                        "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + (new Date()).toString() + "<br> pickup location: " + pickup_location2 + " <br> total price: " + total_price +"</p>" +
+                        "</a>" + 
+                    "<a onclick=\"click_split_button_delete('" + order_id + "', "+total_price+" );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
+            "</li>";
+                    //$("#order_history_list_incomplete").prepend(content);  
+                    console.log("DONE SUBMIT");
+                    //console.log(content);
+                    // refresh listview
+                    $('ul').listview('refresh');
+            
+                    history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#order_history_page");  // change browser history
                     $.mobile.changePage("#submit_success_page"); // navigate to submit_success_page and ask user to share.
                 }).fail(function(data){
                     alert(data);
@@ -592,11 +614,16 @@
     /*$("#submit_success_page").bind("pagehide", function(){
         window.location.replace(current_url); // reload page
     })*/
+    $("#thx_for_sharing").on("pagecreate", function(){
+        // change browser history
+        history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#order_history_page");  // change browser history
+    })
+        
     $("#close_submit_success_page").click(function(){
         window.location.replace(current_url); // reload page
     })
     $("#close_thx_for_sharing").click(function(){
-        window.location.replace(current_url.slice(0, current_url.indexOf("#"))); // reload page
+        window.location.replace(current_url.slice(0, current_url.indexOf("#"))+"'#order_history_page"); // reload page
     });
     /*
     // this doesn't work

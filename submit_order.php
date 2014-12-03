@@ -19,7 +19,8 @@
 
     $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库
     if (mysqli_connect_errno()){
-        echo "Cannot connect to MySQL: " . mysqli_connect_error();
+        //echo "Cannot connect to MySQL: " . mysqli_connect_error();
+        echo "Failed";
         exit;
     }
     // add meal order
@@ -31,7 +32,8 @@
                                                '$pickup_location',
                                                '$order_date');";
     if(!mysqli_query($cons, $query_content)){
-        echo "MySQL Error: " . mysqli_error($cons);
+        //echo "MySQL Error: " . mysqli_error($cons);
+        echo "Failed";
         exit;
     }
 
@@ -40,8 +42,9 @@
                                   WHERE wechatid='$wechat_id'";
 
     if(!mysqli_query($cons, $query_content)){
-        echo "MySQL Error: " . mysqli_error($cons);
+        //echo "MySQL Error: " . mysqli_error($cons);
+        echo "Failed";
         exit;
     }
-    echo "Submit Order ";
+    echo $order_id; // return order_id
 ?>
