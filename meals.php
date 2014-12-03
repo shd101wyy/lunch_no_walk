@@ -3,399 +3,332 @@
         $wechatid = stripslashes($_GET["wechatid"]);
         if($wechatid[0] === "'"){
             $wechatid = substr($wechatid, 1, -1);
-        }
-       
-        // calculate weekday.
-        $current_hour = date("H"); // 24小时制。
-        if($current_hour >= 14)
-            $current_weekday = date("l", strtotime("+1 day"));
-        else
-            $current_weekday = date("l"); // 如果比14点往后，算下一天的。
-
-        $RESULT = "";
-        // retrieve data from database
-        // try connect to sql
-        $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库, connect to sql
-        if (mysqli_connect_errno()){
-            $RESULT = "Cannot connect to MySQL: " . mysqli_connect_error();
-            echo $RESULT;
-            exit;
-        }
-        // get menus today
-        $query_content = "SELECT * FROM meals WHERE week_day='$current_weekday'";
-        $query_result = mysqli_query($cons, $query_content);
-
-        if($query_result){
-            $my_array = array(); 
-            while($php_arr = mysqli_fetch_array($query_result, /*MYSQLI_NUM*/MYSQLI_ASSOC)){
-                array_push($my_array, $php_arr);
-            }
-            $js_array = json_encode($my_array);
-            $RESULT = $js_array;
+        } 
+        if(isset($_GET["refresh"])){
+            $refresh = 1;
         }
         else{
-            $RESULT = "Cannot connect to MySQL";
-            exit;
+            $refresh = 0;
         }
-
-        // get user order
-        $query_content = "SELECT * FROM meal_order WHERE wechat_id='$wechatid' ORDER BY order_date DESC";
-        $query_result = mysqli_query($cons, $query_content);
-        if($query_result){
-            $my_array = array();
-            while($php_arr = mysqli_fetch_array($query_result, MYSQLI_ASSOC)){
-                $menu_id = $php_arr["menu_id"]; // get menu_id
-                // retrieve menu according to menu_id
-
-                $query_for_menu = "SELECT * FROM meals WHERE id='$menu_id'";
-                $query_for_menu = mysqli_query($cons, $query_for_menu);
-
-                $menu_data = mysqli_fetch_array($query_for_menu, MYSQLI_ASSOC);
-
-                // add menu property to $php_arr.
-                $php_arr["menu"] = $menu_data;
-                array_push($my_array, $php_arr);
-            }
-            $js_array = json_encode($my_array);
-            $ORDER_HISTORY = $js_array;
-        }
-        else{
-            $ORDER_HISTORY = "Cannot connect to MySQL";
-            exit;
-        }
-
-        // get user info according to wechat id 
-        $query_content = "SELECT * FROM user WHERE wechatid='$wechatid'";
-        $query_result = mysqli_query($cons, $query_content);
-        if($query_result){
-            $USER_INFO = json_encode(mysqli_fetch_array($query_result, MYSQLI_ASSOC));
-        }
-        else{
-            $USER_INFO = "\"Cannot connect to MySQL\"" . $query_content;
-        }
-        
     ?>
-    <head>
-        <title>
-            Menus
-        </title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="apple-mobile-web-app-capable" content="yes"> <!-- iOS full screen -->
-        <meta name="mobile-web-app-capable" content="yes"> <!-- android full screen -->
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
-        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
-    </head>
-    <body>
-        <div data-role="page" id="meal_page">
-            <!-- <div data-role="header">
+<head>
+    <title>
+        Menus
+    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- iOS full screen -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- android full screen -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+</head>
+
+<body>
+    <div data-role="page" id="meal_page">
+        <!-- <div data-role="header">
                 <h1>
                     Menu A
                 </h1>
             </div> -->
-            <div data-role="main" class="ui-content">
-                <h3 id="time"></h3>
-                <h3 id="rest_money">0</h3>
-                <a href="#faq">FAQ 疑问解答</a> <br><br>
-                
-                <!-- 
+        <div data-role="main" class="ui-content">
+            <h3 id="time"></h3>
+            <h3 id="rest_money">0</h3>
+            <a href="#faq">FAQ 疑问解答</a> 
+            <br>
+            <br>
+
+            <!-- 
                     link to official account 
                     链接到公众账号
 
                     
                     tutorial is here(教程在这个网站) http://jingyan.baidu.com/article/2d5afd69efd2cf85a3e28e6b.html
                 -->
-                <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd">About lunch no walk </a>
+            <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd">About lunch no walk </a>
 
-                
-                <ul data-role="listview" data-inset="true" id="menu_list">
-                    <!-- Show menu information here -->
+
+            <ul data-role="listview" data-inset="true" id="menu_list">
+                <!-- Show menu information here -->
+            </ul>
+        </div>
+        <!-- Footer -->
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <!-- <li><a href="#meal_page">Menus</a></li> -->
+                    <li><a href="#order_history_page" data-transition="slidefade">My Orders</a>
+                    </li>
+                    <li><a href="#settings_page" data-transition="slidefade">Settings</a>
+                    </li>
                 </ul>
             </div>
-            <!-- Footer -->
-            <div data-role="footer"  data-position="fixed">	
-                   <div data-role="navbar">
-                      <ul>
-                         <!-- <li><a href="#meal_page">Menus</a></li> -->
-                         <li><a href="#order_history_page" data-transition="slidefade">My Orders</a></li>
-                         <li><a href="#settings_page" data-transition="slidefade">Settings</a></li>
-                      </ul>
-                   </div><!-- /navbar -->
-            </div><!-- /footer -->
-            
+            <!-- /navbar -->
         </div>
-          
-        
-        <!-- Order History Page -->
-        <div data-role="page" id="order_history_page">
-            <div data-role="main" class="ui-content">
-                <p> You can check your orders here <br>
-                    You can cancel order here by clicking crossing button.
-                </p>
-                
-                <ul data-role="listview" data-inset="true" id="order_history_list_incomplete">
-                    <!-- Show user incomplete order here -->
-                </ul>
-                <ul data-role="listview" data-inset="true" id="order_history_list_complete">
-                    <!-- Show user completed order here -->
-                </ul>
-                
-            </div>
+        <!-- /footer -->
+
+    </div>
+
+
+    <!-- Order History Page -->
+    <div data-role="page" id="order_history_page">
+        <div data-role="main" class="ui-content">
+            <p>You can check your orders here
+                <br>You can cancel order here by clicking crossing button.
+            </p>
+
+            <ul data-role="listview" data-inset="true" id="order_history_list_incomplete">
+                <!-- Show user incomplete order here -->
+            </ul>
+            <ul data-role="listview" data-inset="true" id="order_history_list_complete">
+                <!-- Show user completed order here -->
+            </ul>
+
         </div>
-        <!-- Personal Settings -->
-        <div data-role="page" id="settings_page">
-            <div data-role="main" class="ui-content">
-                <p>
-                   You can update your profile information here.
-                </p>
-                <!-- <h3> 请填写下面信息 </h3>
+    </div>
+    <!-- Personal Settings -->
+    <div data-role="page" id="settings_page">
+        <div data-role="main" class="ui-content">
+            <p>
+                You can update your profile information here.
+            </p>
+            <!-- <h3> 请填写下面信息 </h3>
                 Change information
                 -->
-                <!-- 姓 -->
-                <label for="signup_user_last_name"> Last name: </label>
-                <input type="text" id="signup_user_last_name" data-clear-btn="true">
-                <!-- 名 --> 
-                <label for="signup_user_first_name"> First name: </label>
-                <input type="text" id="signup_user_first_name" data-clear-btn="true">             
-                <!-- <label for="signup_username">姓名:</label>
+            <!-- 姓 -->
+            <label for="signup_user_last_name">Last name:</label>
+            <input type="text" id="signup_user_last_name" data-clear-btn="true">
+            <!-- 名 -->
+            <label for="signup_user_first_name">First name:</label>
+            <input type="text" id="signup_user_first_name" data-clear-btn="true">
+            <!-- <label for="signup_username">姓名:</label>
                 <input type="text" id="signup_username" data-clear-btn="true"> -->
-                <!-- 电话 -->
-                <label for="signup_phonenumber"> Cellphone number:</label>
-                <input type="text" id="signup_phonenumber" data-clear-btn="true" name="signup_phonenumber">
-                
-                <!-- 下拉菜单 -->
-                <fieldset class="ui-field-contain">
-                    <label for="signup_pickup_location"> Select one of the location most close to you: </label>
-                    <select name="signup_pickup_location" id="signup_pickup_location">
-                      <!-- Location selections here -->
-                    </select>
-                </fieldset>
-                <br>
-                <button id="change_user_profile" data-inline="true">Update Profile</button> 
-            </div>
+            <!-- 电话 -->
+            <label for="signup_phonenumber">Cellphone number:</label>
+            <input type="text" id="signup_phonenumber" data-clear-btn="true" name="signup_phonenumber">
+
+            <!-- 下拉菜单 -->
+            <fieldset class="ui-field-contain">
+                <label for="signup_pickup_location">Select one of the location most close to you:</label>
+                <select name="signup_pickup_location" id="signup_pickup_location">
+                    <!-- Location selections here -->
+                </select>
+            </fieldset>
+            <br>
+            <button id="change_user_profile" data-inline="true">Update Profile</button>
         </div>
-        
-        
-        <!-- Menu Information -->
-        <div data-role="page" id="menu_info">
-            <div data-role="header">
-                <h1 id="menu_num">
+    </div>
+
+
+    <!-- Menu Information -->
+    <div data-role="page" id="menu_info">
+        <div data-role="header">
+            <h1 id="menu_num">
                     Menu A
                 </h1>
-            </div>   
-            <div data-role="main" class="ui-content">
-                <img id="menu_pic" src="images.jpeg" width="100%", height="40%">
-                <b id="menu_intro"> 宫爆鸡丁， 蒜蓉生姜菜 </b>
-                <!-- 下拉菜单 pickup location -->
-                <fieldset class="ui-field-contain">
-                    <label for="pickup_location"> Select one of the location most close to you: </label>
-                    <select name="pickup_location" id="pickup_location">
-                        <!-- Fill In later using JavaScript -->
-                    </select>
-                </fieldset>
-                
-                <!-- 下拉菜单 点餐数量 -->
-                <!-- 下拉菜单 -->
-                <fieldset class="ui-field-contain">
-                    <label for="order_num"> Select how many meals you want to order: </label>
-                    <select name="order_num" id="order_num">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                    </select>
-                </fieldset>
-                
-                <h4 id="menu_price">5.00 </h4>
-                <button id="submit_button"> Submit </button>
-            </div>
         </div>
-        <!-- Cancel Order -->
-        <div data-role="page" id="delete_order" data-dialog="true">
-          <div data-role="main" class="ui-content">
-          <h3>Cancel Order</h3>
+        <div data-role="main" class="ui-content">
+            <img id="menu_pic" src="images.jpeg" width="100%" , height="40%">
+            <b id="menu_intro"> 宫爆鸡丁， 蒜蓉生姜菜 </b>
+            <!-- 下拉菜单 pickup location -->
+            <fieldset class="ui-field-contain">
+                <label for="pickup_location">Select one of the location most close to you:</label>
+                <select name="pickup_location" id="pickup_location">
+                    <!-- Fill In later using JavaScript -->
+                </select>
+            </fieldset>
+
+            <!-- 下拉菜单 点餐数量 -->
+            <!-- 下拉菜单 -->
+            <fieldset class="ui-field-contain">
+                <label for="order_num">Select how many meals you want to order:</label>
+                <select name="order_num" id="order_num">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </fieldset>
+
+            <h4 id="menu_price">5.00 </h4>
+            <button id="submit_button">Submit</button>
+        </div>
+    </div>
+    <!-- Cancel Order -->
+    <div data-role="page" id="delete_order" data-dialog="true">
+        <div data-role="main" class="ui-content">
+            <h3>Cancel Order</h3>
             <p>Are you sure you want to cancel this order?</p>
             <a href="#" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini" id='delete_order_button'>Delete</a>
             <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
-          </div>
-        </div> 
-        
-        <!-- FAQ page -->
-        <div data-role="page" id="faq"> 
-            <div data-role="header">
-                <h1>
+        </div>
+    </div>
+
+    <!-- FAQ page -->
+    <div data-role="page" id="faq">
+        <div data-role="header">
+            <h1>
                     FAQ 疑难解答
                 </h1>
-            </div>   
-            <div data-role="main" class="ui-content">
-                <ul>
-                    <li>
-                        <strong>Q</strong> If I ordered a meal, but I can not come, what should I do?
-                    </li>
-                    <li>
-                        <strong>A</strong> Please ask your friend to help pick up the order.
-                    </li>
-                    <br>
-                    <li>
-                        <strong>Q</strong> If I miss the deadline to order the food for today, what should I do?
-                    </li>
-                    <li>
-                        <strong>A</strong> After the deadline of 10am, you can place order of the “Special of today” until 11:20am. After 11:20am, we’ll have limited supply, you can order until sold out.
-                    </li>
-                    <br>
-                    <li>
-                        <strong>Q</strong> What if I forget to pick up the order?
-                    </li>
-                    <li>
-                        <strong>A</strong> Please mark your calendar, be sure to come by and pick up. Otherwise you'll still be charged. You can find a friend to help pick up. You can cancel your order before 10am.
-                    </li>
-                    <br>
-                    <li>
-                        <strong>Q</strong> How to pay?
-                    </li>
-                    <li>
-                        <strong>A</strong> Users' orders will be processed if their balance is more or equal to $0 before the delivery date. You can recharge at the pick-up location. The system will automatically charge when ordering. Red warning pops up when balance is less than $15. Online payment: Put your user name\Name in the comment region. (Suggested minimum amount: $20) . Payment will be processed daily.
-                        <ol>
-                            <li>
-                                Users can transfer the money to Paypal: lunchnowalk@gmail.com by personal from Paypal balance or bank(Not by credit) otherwise, the users will need to pay for the transaction fees. Users can send an email to lunchnowalk@gmail.com after sending money through Paypal.</li>
-                            <li>
-                                Transfer money through Chasequickpay to jiangjing.36@gmail.com
-                            </li>
-                        </ol>
-                    </li>
-                    <br>
-                    <br>
-                    <li>
-                        <strong>Q</strong> 如果我今天订了餐，但是中午临时有事取不来菜怎么办？
-                    </li>
-                    <li>
-                        <strong>A</strong> 建议请同学帮忙去取菜，报上自己的名字。
-                    </li>
-                    <br>
-                    <li>
-                        <strong>Q</strong> 如果我今天错过了时间忘了订餐怎么办？
-                    </li>
-                    <li>
-                        <strong>A</strong> 错过10am的订餐截止日期，您还可以在11:20am之前订“今日特价”餐，在这个时间后，我们还会有少量供应，售完为止。
-                    </li>
-                    <br>
-                    <li>
-                        <strong>Q</strong> 忘了来取怎么办？
-                    </li>
-                    <li>
-                        <strong>A</strong> 请同学们给自己手机日历上面标记提醒，一定要过来取。否则照样扣款。可以找朋友帮忙来取。10点之前可以取消订单。
-                    </li>
-                    <br>
-                    <li>
-                        <strong>Q</strong> 支付方式是如何的呢？
-                    </li>
-                    <li>
-                        <strong>A</strong> 用户网上帐户是大于等于$0的时候，订单都会被处理。在领餐的时候可以充值。订餐时自动扣款。余额少于$15时，将会有提示信息～ 在线支付：请在注释区填写用户名\姓名 为了大家方便，建议每次最少充值$20. 每天固定时间处理。
-                        <ol>
-                            <li>
-                                用户可以转钱到Paypal账户：lunchnowalk@gmail.com，通过“个人支付”，资金来源请勿选择信用卡。否则所有产生的交易费用由用户承担。用户最好在Paypal转钱后同时给lunchnowalk@gmail.com发邮件。
-                            </li>
-                            <li>
-                                用Chasequickpay把充值金额转入jiangjing.36@gmail.com
-                            </li>
-                        </ol>
-                    </li>
-                </ul>
-            </div>
         </div>
-        
-        <!-- Order success page -->
-        <div data-role="page" id="submit_success_page">
-            <div data-role="main" class="ui-content">
-                <h3> Submit Order Successfully </h3>
-                <p>Share <a id="share_link">this link and click me</a> to <b>Moments</b> to get free drinks</p>
-                <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" id="close_submit_success_page">Close</a>
-            </div>
+        <div data-role="main" class="ui-content">
+            <ul>
+                <li>
+                    <strong>Q</strong> If I ordered a meal, but I can not come, what should I do?
+                </li>
+                <li>
+                    <strong>A</strong> Please ask your friend to help pick up the order.
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> If I miss the deadline to order the food for today, what should I do?
+                </li>
+                <li>
+                    <strong>A</strong> After the deadline of 10am, you can place order of the “Special of today” until 11:20am. After 11:20am, we’ll have limited supply, you can order until sold out.
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> What if I forget to pick up the order?
+                </li>
+                <li>
+                    <strong>A</strong> Please mark your calendar, be sure to come by and pick up. Otherwise you'll still be charged. You can find a friend to help pick up. You can cancel your order before 10am.
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> How to pay?
+                </li>
+                <li>
+                    <strong>A</strong> Users' orders will be processed if their balance is more or equal to $0 before the delivery date. You can recharge at the pick-up location. The system will automatically charge when ordering. Red warning pops up when balance is less than $15. Online payment: Put your user name\Name in the comment region. (Suggested minimum amount: $20) . Payment will be processed daily.
+                    <ol>
+                        <li>
+                            Users can transfer the money to Paypal: lunchnowalk@gmail.com by personal from Paypal balance or bank(Not by credit) otherwise, the users will need to pay for the transaction fees. Users can send an email to lunchnowalk@gmail.com after sending money through Paypal.</li>
+                        <li>
+                            Transfer money through Chasequickpay to jiangjing.36@gmail.com
+                        </li>
+                    </ol>
+                </li>
+                <br>
+                <br>
+                <li>
+                    <strong>Q</strong> 如果我今天订了餐，但是中午临时有事取不来菜怎么办？
+                </li>
+                <li>
+                    <strong>A</strong> 建议请同学帮忙去取菜，报上自己的名字。
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> 如果我今天错过了时间忘了订餐怎么办？
+                </li>
+                <li>
+                    <strong>A</strong> 错过10am的订餐截止日期，您还可以在11:20am之前订“今日特价”餐，在这个时间后，我们还会有少量供应，售完为止。
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> 忘了来取怎么办？
+                </li>
+                <li>
+                    <strong>A</strong> 请同学们给自己手机日历上面标记提醒，一定要过来取。否则照样扣款。可以找朋友帮忙来取。10点之前可以取消订单。
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> 支付方式是如何的呢？
+                </li>
+                <li>
+                    <strong>A</strong> 用户网上帐户是大于等于$0的时候，订单都会被处理。在领餐的时候可以充值。订餐时自动扣款。余额少于$15时，将会有提示信息～ 在线支付：请在注释区填写用户名\姓名 为了大家方便，建议每次最少充值$20. 每天固定时间处理。
+                    <ol>
+                        <li>
+                            用户可以转钱到Paypal账户：lunchnowalk@gmail.com，通过“个人支付”，资金来源请勿选择信用卡。否则所有产生的交易费用由用户承担。用户最好在Paypal转钱后同时给lunchnowalk@gmail.com发邮件。
+                        </li>
+                        <li>
+                            用Chasequickpay把充值金额转入jiangjing.36@gmail.com
+                        </li>
+                    </ol>
+                </li>
+            </ul>
         </div>
-        
-        <!-- Thx for sharing -->
-        <div data-role="page" id="thx_for_sharing">
-            <div data-role="main" class="ui-content">
-                <h1>Thanks for ordering with us ! ;)</h1>
-                <h1>谢谢惠顾, 祝您用餐愉快</h1>
-                <!--<a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini"
-                   id="close_thx_for_sharing">Close</a>-->
-                <button id="close_thx_for_sharing">Click me to Close!</button>
-            </div>
-        </div>
-        
-    </body>
-    
-    
-    
-    <script>
-        /*
+    </div>
+</body>
+
+
+
+<script>
+    /*
         // hide wechat tool bar
         document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
             WeixinJSBridge.call('hideToolbar');
             WeixinJSBridge.call('hideOptionMenu');
         });
         */
-        
-        // global variable
-        var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
-        if(wechatid[0] === "'" || wechatid[0] === "\""){
-            wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
-        }
-        
+    // global variable
+    var current_url = document.URL;
+    var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
+    var refresh = "<?php echo $refresh;?>"; // get refresh
+    if(parseInt(refresh) === 1){ // need to refresh current page
+        window.location.href = current_url.slice(0, current_url.indexOf("&refresh") + "#order_history_page");  // 解决 back button 不能更新 ajax 的问题  
+    }
+    if (wechatid[0] === "'" || wechatid[0] === "\"") {
+        wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
+    }
+
+    var user_info = null;
+    var data = null;
+    var order_history = null;
+    var pickup_location = null;
+
+    $(document).ready(function () {
         /*
-        * user_info is in format like:
-        [Log] Object (meals.php, line 142)
-                administrator: "1"
-                first_name: "Yiyi"
-                last_name: "Wang"
-                phone: "2176499936"
-                pickup_location: "BIF"
-                wechatid: "owHwut4vD3-Gf3WvMKKMBS-LFLIk"
-                __proto__: Object
+         * get user_info order_history menu_data from server.
+         * init page
+         */
+        $.ajax({
+            url: "./init_meals.php",
+            async: false,
+            type: "POST",
+            // 下面是发送的信息
+            data: {
+                wechatid: wechatid
+            }
+        }).done(function (v) {
+            if (v === "Failed") {
+                alert("Failed to connect to server");
+            } else {
+                v = JSON.parse(v);
+                //alert(v[1] + "   " + wechatid);
+                data = JSON.parse(v[0]);
+                order_history = JSON.parse(v[1]);
+                user_info = JSON.parse(v[2]);
+                pickup_location = user_info.pickup_location;
+                // setup time
+                var d = new Date();
+                var weekday = new Array(7);
+                weekday[0] = "Sunday";
+                weekday[1] = "Monday";
+                weekday[2] = "Tuesday";
+                weekday[3] = "Wednesday";
+                weekday[4] = "Thursday";
+                weekday[5] = "Friday";
+                weekday[6] = "Saturday";
+                var n = weekday[(d.getHours() >= 14) ? ((d.getDay() + 1) % 7) : d.getDay()];
+                $("#time").html(n + "'s Menus: <br>")
+                /*
+                 * 显示余额
+                 */
 
-        */
-        var user_info = <?php echo $USER_INFO; ?>;
-        var pickup_location = user_info.pickup_location;
-        //console.log(wechatid);
-        //console.log(pickup_location);
-        //console.log(user_info);
-        var current_url = document.URL;
-        $(document).ready(function(){
-            // setup time
-            var d = new Date();
-            var weekday = new Array(7);
-            weekday[0]=  "Sunday";
-            weekday[1] = "Monday";
-            weekday[2] = "Tuesday";
-            weekday[3] = "Wednesday";
-            weekday[4] = "Thursday";
-            weekday[5] = "Friday";
-            weekday[6] = "Saturday";
-            var n = weekday[(d.getHours() >= 14) ? ((d.getDay() + 1) % 7) : d.getDay()];
-            $("#time").html(n + "'s Menus: <br>")
-            /*
-            * 显示余额
-            */ 
-            
-            $("#rest_money").html("Money in Account: $"+user_info.money);
-            /*
-            * 
-            * use php to read menus from server(meals)
-            *
-            */
-
-            // console.log("Get Data");
-            var data = <?php echo $RESULT; ?>;         // get menu data
-            var order_history = <?php echo $ORDER_HISTORY; ?>;
-            /*
+                $("#rest_money").html("Money in Account: $" + user_info.money);
+                /*
+                 *
+                 * use php to read menus from server(meals)
+                 *
+                 */
+                /*
                 data is like 
                 [
                     Object
@@ -423,18 +356,18 @@
                     __proto__: Object
                 ]
             */
-            //console.log(data);
-            //console.log(order_history);
-            // the code below is for debug use.
-            // $("#order_history_page").append(JSON.stringify(order_history));
-            for(var i = 0; i < data.length; i++){
-                var d = data[i];
-                var pic = d.image_path;
-                var intro = d.introduction;
-                var price = d.price;
-                var id = d.id;
-                // begin to create dom
-                /*
+                //console.log(data);
+                //console.log(order_history);
+                // the code below is for debug use.
+                // $("#order_history_page").append(JSON.stringify(order_history));
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    var pic = d.image_path;
+                    var intro = d.introduction;
+                    var price = d.price;
+                    var id = d.id;
+                    // begin to create dom
+                    /*
                  <li>
                         <a href="#meal_A"  data-transition="slidefade"><img src="images.jpeg">
                             <h2> Menu A</h2>
@@ -442,39 +375,57 @@
                         </a>
                     </li>
                 */
-                var content = 
-            "<li>" + 
-                "<a onclick=\"check_menu('Menu " + (1 + i) + "', '" + pic + "', " + price + ", '" + id + "', '" + intro + "')\" " + 
-                    "href='#menu_info' data-transition='slidefade'><img src='" + pic + "'>" + 
-                    "<h2>Menu " + (1 + i) + "</h2>" + 
-                    "<p>" + intro + "</p>" + 
-                    "<p>$" + price + "</p>" +
-                "</a>"+
-            "</li>";
-                $("#menu_list").append(content);
-            }
-            
+                    var content =
+                        "<li>" +
+                        "<a onclick=\"check_menu('Menu " + (1 + i) + "', '" + pic + "', " + price + ", '" + id + "', '" + intro + "')\" " +
+                        "href='#menu_info' data-transition='slidefade'><img src='" + pic + "'>" +
+                        "<h2>Menu " + (1 + i) + "</h2>" +
+                        "<p>" + intro + "</p>" +
+                        "<p>$" + price + "</p>" +
+                        "</a>" +
+                        "</li>";
+                    $("#menu_list").append(content);
+                }
 
-            
-            // set default pickup selection
-            var pickup_location_selection_options = "";
-            var locations = ["MNTL", "BIF", "RAL"];
-            for(var i = 0; i < locations.length; i++){
-                var l = locations[i];
-                if(l === pickup_location){
-                    pickup_location_selection_options += "<option selected='selected'>" + pickup_location + "</option>";
-                }
-                else{
-                    pickup_location_selection_options += "<option>" + l + "</option>";
-                }
-            }
-            $("#pickup_location").html(pickup_location_selection_options);
-            $("#signup_pickup_location").html(pickup_location_selection_options);
-            
-            // set order history.  $("#order_history")
-            for(var i = 0; i < order_history.length; i++){
-                var o = order_history[i];
                 /*
+            $("#order_history_page").on("pagechange", function(){
+                //alert("Page change");
+            })
+            $("#order_history_page").on("pagechangefailed", function(){
+                //alert("Page change failed");
+            })
+            $("#order_history_page").on("pagecreate", function(){
+                alert("Page create " + refresh_order_page + " asd");
+                //alert("Fuck me");
+                //window.location.reload(true);
+            })
+            $("#order_history_page").on("pagehide", function(){
+                //alert("Page hide");
+            })
+            $("#order_history_page").on("pageinit", function(){
+                $("ul").listview().listview("refresh");
+            })
+            */
+
+
+                // set default pickup selection
+                var pickup_location_selection_options = "";
+                var locations = ["MNTL", "BIF", "RAL"];
+                for (var i = 0; i < locations.length; i++) {
+                    var l = locations[i];
+                    if (l === pickup_location) {
+                        pickup_location_selection_options += "<option selected='selected'>" + pickup_location + "</option>";
+                    } else {
+                        pickup_location_selection_options += "<option>" + l + "</option>";
+                    }
+                }
+                $("#pickup_location").html(pickup_location_selection_options);
+                $("#signup_pickup_location").html(pickup_location_selection_options);
+
+                // set order history.  $("#order_history")
+                for (var i = 0; i < order_history.length; i++) {
+                    var o = order_history[i];
+                    /*
                 * o is in format like:
                 [Log] [ (meals.php, line 166)
                         Object
@@ -495,155 +446,136 @@
                         ]
                 *
                 */
-                
-                var complete = o.complete;
-                var menu = o.menu;
-                var order_date = new Date(parseInt(o.order_date));  // change order date from timestamp to
-                var order_id = o.order_id;
-                var order_num = o.order_num;
-                var pickup_location_ = o.pickup_location;
-                var pic = menu.image_path;
-                var intro = menu.introduction;
-                var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
-                var content;
-                if(complete == 1){ // completed order
-                    content = 
-          "<li data-theme='b'>" + 
-                    "<a href='#'>"+
-                    "<img src='"+pic+"'>" +
-                    "<h2>Completed Order: "+order_id+"</h2>" +
-                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
-                    "</a>" + 
-            "</li>";
-                    $("#order_history_list_complete").append(content);  
+
+                    var complete = o.complete;
+                    var menu = o.menu;
+                    var order_date = new Date(parseInt(o.order_date)); // change order date from timestamp to
+                    var order_id = o.order_id;
+                    var order_num = o.order_num;
+                    var pickup_location_ = o.pickup_location;
+                    var pic = menu.image_path;
+                    var intro = menu.introduction;
+                    var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
+                    var content;
+                    if (complete == 1) { // completed order
+                        content =
+                            "<li data-theme='b'>" +
+                            "<a href='#'>" +
+                            "<img src='" + pic + "'>" +
+                            "<h2>Completed Order: " + order_id + "</h2>" +
+                            "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price + "</p>" +
+                            "</a>" +
+                            "</li>";
+                        $("#order_history_list_complete").append(content);
+                    } else { // incomplete order
+                        content =
+                            "<li >" +
+                            "<a href='#'>" +
+                            "<img src='" + pic + "'>" +
+                            "<h2>Incomplete Order: " + order_id + "</h2>" +
+                            "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price + "</p>" +
+                            "</a>" +
+                            "<a onclick=\"click_split_button_delete('" + order_id + "', " + price + " );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
+                            "</li>";
+                        $("#order_history_list_incomplete").append(content);
+                    }
                 }
-                else{ // incomplete order
-                    content = 
-            "<li >" + 
-                    "<a href='#'>"+
-                    "<img src='"+pic+"'>" +
-                    "<h2>Incomplete Order: "+order_id+"</h2>" +
-                    "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date.toString() + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
-                    "</a>" + 
-                    "<a onclick=\"click_split_button_delete('" + order_id + "', "+price+" );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
-            "</li>";
-                    $("#order_history_list_incomplete").append(content);   
-                }                
+
+                // setup change profile page.
+                $("#signup_user_last_name").val(user_info.last_name);
+                $("#signup_user_first_name").val(user_info.first_name);
+                $("#signup_phonenumber").val(user_info.phone);
+
+                // refresh listview
+                //$("#order_history_list_complete").listview('refresh');
+                //$('#order_history_list_incomplete').listview('refresh');
+                $('ul').listview().listview('refresh');
+
             }
-            
-            // setup change profile page.
-            $("#signup_user_last_name").val(user_info.last_name);
-            $("#signup_user_first_name").val(user_info.first_name);
-            $("#signup_phonenumber").val(user_info.phone);
-            
-            // refresh listview
-            //$("#order_history_list_complete").listview('refresh');
-            //$('#order_history_list_incomplete').listview('refresh');
-            $('ul').listview().listview('refresh');
+        }).fail(function (data) {
+            alert("Failed to connect to server");
         })
+        /*
+        console.log("menu data: ");
+        console.log(data);
+        console.log("order history: ");
+        console.log(order_history);
+        console.log("user info");
+        console.log(user_info);
+        */
+    })
+
+
+    /*
+        * user_info is in format like:
+        [Log] Object (meals.php, line 142)
+                administrator: "1"
+                first_name: "Yiyi"
+                last_name: "Wang"
+                phone: "2176499936"
+                pickup_location: "BIF"
+                wechatid: "owHwut4vD3-Gf3WvMKKMBS-LFLIk"
+                __proto__: Object
+
+        */
+    //console.log(wechatid);
+    //console.log(pickup_location);
+    //console.log(user_info);
+
     // check menu information
     // customers can buy meal from it.
-    var check_menu = function(menu_num, pic, price, id, intro){
-        $("#menu_num").html(menu_num);
-        $("#menu_pic").attr("src", pic);
-        $("#menu_price").html(" Price: $" + price);
-        $("#menu_info").attr("menu_id", id);
-        $("#menu_info").attr("menu_price", price);
-        $("#menu_intro").html(intro);
-    }    
-    // clicked submit button
-    // 下订单
-    $("#submit_button").click(function(){ 
+    var check_menu = function (menu_num, pic, price, id, intro) {
+            $("#menu_num").html(menu_num);
+            $("#menu_pic").attr("src", pic);
+            $("#menu_price").html(" Price: $" + price);
+            $("#menu_info").attr("menu_id", id);
+            $("#menu_info").attr("menu_price", price);
+            $("#menu_intro").html(intro);
+        }
+        // clicked submit button
+        // 下订单
+    $("#submit_button").click(function () {
         var menu_id = $("#menu_info").attr("menu_id"); // get menu id  
         var menu_price = $("#menu_info").attr("menu_price"); // get menu price
-        
+
 
         // var wechatid = wechatid; // get wechatid
         var pickup_location2 = $("#pickup_location option:selected").val(); // get pickup location
         var order_num = $("#order_num option:selected").val(); // get order num
-        
+
         var total_price = menu_price * order_num; // 订餐总共需要花费的金额
-        var user_money = user_info.money;         // user money
-        
-        if(user_money < 0){ // 余额不足, 不能订餐。
+        var user_money = user_info.money; // user money
+
+        if (user_money < 0) { // 余额不足, 不能订餐。
             alert("Not enough money in your account\n您的账户余额不足");
             return;
-        }        
-        
+        }
+
         $.ajax({
-                    url: "./submit_order.php",
-                    async: false,
-                    type: "POST",
-                    // 下面是发送的信息
-                    data:{menu_id: menu_id,
-                          wechat_id: wechatid,
-                          pickup_location: pickup_location2,
-                          order_num: order_num,
-                          order_date: (+new Date).toString(), 
-                          user_rest_money: user_money - total_price  // 账户余额
-                         }
-                }).done(function(data){
-                    if(data === "Failed") return; // failed to upload data to mysql 
-                    var order_id = data; 
-                    var pic = $("#menu_pic").attr("src");
-                    var intro = $("#menu_intro").html();
-                    // add current order to $("#order_history_list_complete")
-                    var content =  "<li >" + 
-                    "<a href='#'>"+
-                        "<img src='"+pic+"'>" +
-                        "<h2>Incomplete Order: "+order_id+"</h2>" +
-                        "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + (new Date()).toString() + "<br> pickup location: " + pickup_location2 + " <br> total price: " + total_price +"</p>" +
-                        "</a>" + 
-                    "<a onclick=\"click_split_button_delete('" + order_id + "', "+total_price+" );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
-            "</li>";
-                    $("#order_history_list_incomplete").prepend(content);  
-                    console.log("DONE SUBMIT");
-                    //console.log(content);
-                    // refresh listview
-                    $('ul').listview('refresh');
-            
-                    alert("Submit Order Successfully:");
-                    history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#order_history_page");  // change browser history
-                    //$.mobile.changePage("#submit_success_page"); // navigate to submit_success_page and ask user to share.
-                    window.location.assign("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
-                }).fail(function(data){
-                    alert(data);
-                });
+            url: "./submit_order.php",
+            async: false,
+            type: "POST",
+            // 下面是发送的信息
+            data: {
+                menu_id: menu_id,
+                wechat_id: wechatid,
+                pickup_location: pickup_location2,
+                order_num: order_num,
+                order_date: (+new Date).toString(),
+                user_rest_money: user_money - total_price // 账户余额
+            }
+        }).done(function (data) {
+            if (data === "Failed") return; // failed to upload data to mysql 
+            alert("Submit Order Successfully");
+            history.pushState({}, "", "meals.php?wechatid=" + wechatid+"&refresh=1"); // change browser history, set refresh option
+            //history.replaceState({}, "", "meals.php?wechatid=" + wechatid + "#order_history_page"); // change browser history
+            window.location.href = ("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
+        }).fail(function (data) {
+            alert(data);
+        });
     });
-        
-    // close submit_success_page
-    /*$("#submit_success_page").bind("pagehide", function(){
-        window.location.replace(current_url); // reload page
-    })*/
-    $("#thx_for_sharing").on("pagecreate", function(){
-        // change browser history
-        console.log("Show thx_for_sharing page: " + "meals.php?wechatid='"+wechatid+"'#order_history_page");
-        history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#order_history_page");  // change browser history
-    })
-        
-    $("#close_submit_success_page").click(function(){
-        window.location.replace(current_url); // reload page
-    })
-    $("#close_thx_for_sharing").click(function(){
-        window.location.replace(current_url.slice(0, current_url.indexOf("#"))+"'#order_history_page"); // reload page
-    });
-    /*
-    // this doesn't work
-    $("#thx_for_sharing").on("pagehide", function(){
-        window.location.replace(current_url); // reload page
-    });
-    */
-    $("#share_link").click(function(){
-        history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#thx_for_sharing");
-        window.location.assign("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
-    });
-    /*
-    $("#submit_success_page").on("pageshow", function(){
-        alert("Show Page");
-    });
-    */  
     // update user profile
-    $("#change_user_profile").click(function(){
+    $("#change_user_profile").click(function () {
         var last_name = $("#signup_user_last_name").val();
         var first_name = $("#signup_user_first_name").val();
         var phone = $("#signup_phonenumber").val();
@@ -655,20 +587,22 @@
             async: false,
             type: "POST",
             // 下面是发送的信息
-            data:{last_name: last_name,
-                  first_name: first_name,
-                  phone: phone,
-                  pickup_location: pickup_location3,
-                  wechatid: wechatid}
-        }).done(function(data){
+            data: {
+                last_name: last_name,
+                first_name: first_name,
+                phone: phone,
+                pickup_location: pickup_location3,
+                wechatid: wechatid
+            }
+        }).done(function (data) {
             alert(data);
             window.location.replace(current_url); // reload page
-        }).fail(function(data){
+        }).fail(function (data) {
             alert(data);
         })
     })
     // when change order num, update price
-    $("#order_num").bind("change", function(){
+    $("#order_num").bind("change", function () {
         var price = $("#menu_price").html();
         price = parseFloat(price.slice(price.indexOf("$") + 1));
         var num = parseInt($("#order_num option:selected").val());
@@ -676,12 +610,12 @@
         $("#menu_price").html(" Price: $" + price);
     })
     // click delete button right side of the list
-    var click_split_button_delete = function(id, total_price){
-        $("#delete_order").attr("delete_id", id); // save the id we want to delete
-        $("#delete_order").attr("total_price", total_price); // save total price of that meal
-    }
-    // cancel order
-    $("#delete_order_button").click(function(){
+    var click_split_button_delete = function (id, total_price) {
+            $("#delete_order").attr("delete_id", id); // save the id we want to delete
+            $("#delete_order").attr("total_price", total_price); // save total price of that meal
+        }
+        // cancel order
+    $("#delete_order_button").click(function () {
         var delete_id = $("#delete_order").attr("delete_id"); // get order id that we want to delete
         var total_price = $("#delete_order").attr("total_price");
         $.ajax({
@@ -689,16 +623,20 @@
             async: false,
             type: "POST",
             // 下面是发送的信息
-            data:{order_id: delete_id, wechatid:wechatid, add_money: total_price}
-        }).done(function(data){
+            data: {
+                order_id: delete_id,
+                wechatid: wechatid,
+                add_money: total_price
+            }
+        }).done(function (data) {
             alert(data);
-            console.log("Delete Order: " + current_url.slice(0, current_url.indexOf("#"))+"'");
-            window.location.replace(current_url.slice(0, current_url.indexOf("#"))+"'"); // reload page
-        }).fail(function(data){
+            current_url = "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid=" + wechatid;
+            window.location.href = (current_url); // reload page
+        }).fail(function (data) {
             alert(data);
         })
-        
+
     })
-    
-    </script>
+</script>
+
 </html>
