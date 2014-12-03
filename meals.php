@@ -272,7 +272,7 @@
     var wechatid = "<?php echo $wechatid; ?>"; // get wechatid
     var refresh = "<?php echo $refresh;?>"; // get refresh
     if(parseInt(refresh) === 1){ // need to refresh current page
-        window.location.href = current_url.slice(0, current_url.indexOf("&refresh") + "#order_history_page");  // 解决 back button 不能更新 ajax 的问题  
+        window.location.href = current_url.slice(0, current_url.indexOf("&refresh")) + "#order_history_page";  // 解决 back button 不能更新 ajax 的问题  
     }
     if (wechatid[0] === "'" || wechatid[0] === "\"") {
         wechatid = wechatid.slice(1, wechatid.length - 1); // remove ''
@@ -567,7 +567,7 @@
         }).done(function (data) {
             if (data === "Failed") return; // failed to upload data to mysql 
             alert("Submit Order Successfully");
-            history.pushState({}, "", "meals.php?wechatid=" + wechatid+"&refresh=1"); // change browser history, set refresh option
+            history.pushState({}, "", "meals.php?wechatid=" + wechatid+"&refresh=1#order_history_page"); // change browser history, set refresh option
             //history.replaceState({}, "", "meals.php?wechatid=" + wechatid + "#order_history_page"); // change browser history
             window.location.href = ("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
         }).fail(function (data) {
