@@ -327,7 +327,6 @@
                 <h1>谢谢惠顾, 祝您用餐愉快</h1>
                 <!--<a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini"
                    id="close_thx_for_sharing">Close</a>-->
-                <p>(Dont click buttons above)</p>
                 <button id="close_thx_for_sharing">Click me to Close!</button>
             </div>
         </div>
@@ -597,14 +596,16 @@
                         "</a>" + 
                     "<a onclick=\"click_split_button_delete('" + order_id + "', "+total_price+" );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
             "</li>";
-                    //$("#order_history_list_incomplete").prepend(content);  
+                    $("#order_history_list_incomplete").prepend(content);  
                     console.log("DONE SUBMIT");
                     //console.log(content);
                     // refresh listview
                     $('ul').listview('refresh');
             
+                    alert("Submit Order Successfully:");
                     history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#order_history_page");  // change browser history
-                    $.mobile.changePage("#submit_success_page"); // navigate to submit_success_page and ask user to share.
+                    //$.mobile.changePage("#submit_success_page"); // navigate to submit_success_page and ask user to share.
+                    window.location.assign("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
                 }).fail(function(data){
                     alert(data);
                 });
@@ -616,6 +617,7 @@
     })*/
     $("#thx_for_sharing").on("pagecreate", function(){
         // change browser history
+        console.log("Show thx_for_sharing page: " + "meals.php?wechatid='"+wechatid+"'#order_history_page");
         history.replaceState({}, "", "meals.php?wechatid='"+wechatid+"'#order_history_page");  // change browser history
     })
         
@@ -690,7 +692,8 @@
             data:{order_id: delete_id, wechatid:wechatid, add_money: total_price}
         }).done(function(data){
             alert(data);
-            window.location.replace(current_url); // reload page
+            console.log("Delete Order: " + current_url.slice(0, current_url.indexOf("#"))+"'");
+            window.location.replace(current_url.slice(0, current_url.indexOf("#"))+"'"); // reload page
         }).fail(function(data){
             alert(data);
         })
