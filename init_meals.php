@@ -21,7 +21,7 @@
             exit;
         }
         // get menus today
-        $query_content = "SELECT * FROM meals WHERE week_day='$current_weekday'";
+        $query_content = "SELECT * FROM meals WHERE week_day='$current_weekday'and available=1;";
         $query_result = mysqli_query($cons, $query_content);
 
         if($query_result){
