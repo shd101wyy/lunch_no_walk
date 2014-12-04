@@ -11,6 +11,7 @@
                     exit;
     }
     // 检查用户钱够吗。
+/*
     $query = "SELECT * FROM user WHERE wechatid='$wechatid'";
     $result = mysqli_query($cons, $query);
     if(!$result){
@@ -25,6 +26,7 @@
             exit;
         }
     }
+*/
     $query = "UPDATE meal_order SET complete='$complete' 
                                     WHERE order_id='$order_id'";
     $result = mysqli_query($cons, $query);

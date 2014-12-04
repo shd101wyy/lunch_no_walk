@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>QR Code Test</title>
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="jquery.qrcode-0.11.0.min.js"></script>
+    </head>
+    <body>
+        <div id="my_qr" class="my_qr"></div>
+        Hello
+    </body>
+    <script>
+        $("#my_qr").qrcode({
+            render:"canvas",
+            text:"http://www.baidu.com",
+            size:64
+        })
+        
+    </script>
+</html>

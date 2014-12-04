@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+    <script src="jquery.qrcode-0.11.0.min.js"></script> <!-- qr code support -->
 </head>
 
 <body>
@@ -78,7 +79,10 @@
             <p>You can check your orders here
                 <br>You can cancel order here by clicking crossing button.
             </p>
-
+            
+            <p>Quick Confirm</p>
+            <div id="qr_code"></div> <!-- qr code here -->
+            
             <ul data-role="listview" data-inset="true" id="order_history_list_incomplete">
                 <!-- Show user incomplete order here -->
             </ul>
@@ -171,7 +175,7 @@
             <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
         </div>
     </div>
-
+    
     <!-- FAQ page -->
     <div data-role="page" id="faq">
         <div data-role="header">
@@ -328,6 +332,7 @@
                  * use php to read menus from server(meals)
                  *
                  */
+
                 /*
                 data is like 
                 [
@@ -491,7 +496,18 @@
                 //$("#order_history_list_complete").listview('refresh');
                 //$('#order_history_list_incomplete').listview('refresh');
                 $('ul').listview().listview('refresh');
-
+                
+                // check user money 
+                if(user_info.money < 0){
+                    $("#qr_code").text("Not enough money in your account, please pay with cash");
+                }
+                else{
+                    $("#qr_code").qrcode({
+                        render:"canvas",
+                        text:"http://www.planetwalley.com/lunch_no_walk/confirm_order_from_user.php?wechatid="+wechatid,
+                        size:64
+                    });
+                }
             }
         }).fail(function (data) {
             alert("Failed to connect to server");
