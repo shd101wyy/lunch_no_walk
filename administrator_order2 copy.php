@@ -59,71 +59,76 @@
                     echo $RESULT;
                     exit;
                 }
-                // JOIN
-                // get join meal_order and meals and user
-                $query_content = "SELECT *
-                                  FROM meal_order 
-                                  INNER JOIN meals 
-                                  ON meal_order.menu_id = meals.id
-                                  INNER JOIN user 
-                                  ON user.wechatid = meal_order.wechat_id
-                                  ORDER BY meal_order.order_date DESC;";
+                // get user order
+                $query_content = "SELECT * FROM meal_order ORDER BY order_date DESC;";
                 $query_result = mysqli_query($cons, $query_content);
                 if($query_result){
-                    $ORDER_HISTORY = array();
+                    $my_array = array();
                     while($php_arr = mysqli_fetch_array($query_result, MYSQLI_ASSOC)){
-                        array_push($ORDER_HISTORY, $php_arr);
+                        $menu_id = $php_arr["menu_id"]; // get menu_id
+                        $wechat_id = $php_arr["wechat_id"]; // get wechat id
+                        // retrieve menu according to menu_id
+                        $query_for_menu = "SELECT * FROM meals WHERE id='$menu_id'";
+                        $query_for_menu = mysqli_query($cons, $query_for_menu);
+                        $menu_data = mysqli_fetch_array($query_for_menu, MYSQLI_ASSOC);
+                        // add menu property to $php_arr.
+                        $php_arr["menu"] = $menu_data;
+                        
+                        // retrieve user data 
+                        $query_for_user = "SELECT * FROM user WHERE wechatid='$wechat_id'";
+                        $query_for_user = mysqli_query($cons, $query_for_user);
+                        $user_data = mysqli_fetch_array($query_for_user, MYSQLI_ASSOC);
+                        // add user property to $php_arr
+                        $php_arr["user"] = $user_data;
+                        
+                        array_push($my_array, $php_arr);
                     }
-                    $ORDER_HISTORY = json_encode($ORDER_HISTORY);
+                    $js_array = json_encode($my_array);
+                    $ORDER_HISTORY = $js_array;
                 }
                 else{
-                    echo "Failed";
+                    $ORDER_HISTORY = "Cannot connect to MySQL";
                     exit;
                 }
             ?>
-            var Failed = "Failed";
             var order_history = <?php echo $ORDER_HISTORY; ?>;
-            if(order_history === Failed){ // failed to connect to server
-                alert("Failed to connect to server");
-                return;
-            }
-            
 // set order history.  $("#order_history")
             for(var i = 0; i < order_history.length; i++){
                 var o = order_history[i];
                 /*
                 * o is in format like:
-                     {"order_id":"5480cb3985be3",
-                     "wechat_id":"owHwut3BntJ86quRSV3h-EVF8B5U",
-                     "menu_id":"5480c6f528cbd",
-                     "order_num":"10",
-                     "complete":"0",
-                     "pickup_location":"MNTL",
-                     "order_date":"1417726780496",
-                     "introduction":"Szechuan Broccoli",
-                     "price":"5",
-                     "image_path":"uploads\/5480c6f528c78431430_490834170943891_1796903915_n.jpg",
-                     "week_day":"Friday",
-                     "id":"5480c6f528cbd",
-                     "available":"1",
-                     "wechatid":"owHwut3BntJ86quRSV3h-EVF8B5U",
-                     "last_name":"wei",
-                     "first_name":"xin",
-                     "phone":"2178192211",
-                     "administrator":"0",
-                     "money":"234"}
+                [Log] [ (meals.php, line 166)
+                        Object
+                            complete: "0"
+                            menu: Object
+                                id: "5445cf32b37da"
+                                image_path: "uploads/ichiban.png"
+                                introduction: "I am handsome"
+                                price: "213"
+                                week_day: "Wednesday"
+                                __proto__: Object
+                            menu_id: "5445cf32b37da"
+                            order_id: "5446cb29cc3d9"
+                            order_num: "1"
+                            pickup_location: "MNTL"
+                            wechat_id: "yiyi"
+                            __proto__: Object
+                        ]
                 *
                 */
+                // console.log(o);
                 var complete = o.complete;
+                var menu = o.menu;
                 var order_date = new Date(parseInt(o.order_date)); // change order date from timestamp to human readable
                 var order_id = o.order_id;
                 var order_num = o.order_num;
                 var pickup_location_ = o.pickup_location;
-                var pic = o.image_path;
-                var intro = o.introduction;
-                var price = parseFloat(o.price) * parseInt(order_num); // get total price.
+                var pic = menu.image_path;
+                var intro = menu.introduction;
+                var price = parseFloat(menu.price) * parseInt(order_num); // get total price.
                 var wechatid = o.wechat_id;
-                var phone = o.phone;
+                var user = o.user;
+                var phone = user.phone;
                 var content;
                 if(complete == 1){ // completed order
                     content = 
@@ -131,10 +136,10 @@
                     "<a href='#'>"+
                     "<img src='"+pic+"'>" +
                     "<h2>Completed Order: "+order_id+"</h2>" +
-                    "<h3> " + o.first_name + " " + o.last_name +"</h3>" +
+                    "<h3> " + user.first_name + " " + user.last_name +"</h3>" +
                     "<p>" + phone + "</p>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + " <br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" + 
-                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='1' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(o.money)+");\"> Revoke:Pay with Balance </button>"
+                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='1' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Revoke:Pay with Balance </button>"
                     "</a>" + 
             "</li>";
                     $("#order_history_list_complete").append(content);  
@@ -145,10 +150,10 @@
                     "<a href='#'>"+
                     "<img src='"+pic+"'>" +
                     "<h2>Incomplete Order: "+order_id+"</h2>" +
-                    "<h3> " + o.first_name + " " + o.last_name +"</h3>" +
+                    "<h3> " + user.first_name + " " + user.last_name +"</h3>" +
                     "<p>" + phone + "</p>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
-                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(o.money)+");\"> Pay with Balance </button><br>" +
+                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Pay with Balance </button><br>" +
                     "<button onclick=\"payWithcash('"+wechatid+"')\">Pay with Cash </button><br>" + 
                     "</a>" +
             "</li>";
