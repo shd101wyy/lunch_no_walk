@@ -148,7 +148,7 @@
                 ]
             */
             console.log("显示");
-            console.log(data);
+            //console.log(data);
             
             // initialize list-divisor from Monday to Sunday.
             for(var i = 0; i < week_days.length; i++){
@@ -179,7 +179,7 @@
                 var id = d.id;
                 if(intro == "" || data_for_that_day == "" )
                     continue;
-                console.log("Add data: " + data_for_that_day + " " + intro + " " + pic);
+                //console.log("Add data: " + data_for_that_day + " " + intro + " " + pic);
                 
                 // show brief information of that meal
                 var li = "<li> <a href='#meal_settings_panel' data-transition='slidefade' onclick=\"clickEditButton('"+intro+"','"+pic+"',"+price+ ", '"  + id + "', '" + data_for_that_day +"');\"><p>" + intro + "</p></a>" +  
