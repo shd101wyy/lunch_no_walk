@@ -153,8 +153,8 @@
                     "<h3> " + user.first_name + " " + user.last_name +"</h3>" +
                     "<p>" + phone + "</p>" +
                     "<p>menu: " + intro + " <br> order num: " + order_num + " <br> date: " + order_date + "<br> pickup location: " + pickup_location_ + " <br> total price: " + price +"</p>" +
-                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Pay with Balance </button>" +
-                    "<button onclick=\"payWithcash('"+wechatid+"')\">Pay with Cash </button>" + 
+                    "<button id='btn"+i+"' order_id='"+o.order_id+"' complete='0' onclick=\"clickCheck('btn"+i+"', '"+wechatid+"', "+price+","+(user.money)+");\"> Pay with Balance </button><br>" +
+                    "<button onclick=\"payWithcash('"+wechatid+"')\">Pay with Cash </button><br>" + 
                     "</a>" +
             "</li>";
                     $("#order_history_list_incomplete").append(content);  

@@ -59,9 +59,9 @@
             <div data-role="navbar">
                 <ul>
                     <!-- <li><a href="#meal_page">Menus</a></li> -->
-                    <li><a href="#order_history_page" data-transition="slidefade">My Orders</a>
+                    <li><a href="#order_history_page" data-transition="slidefade" style="text-align:center;">My Orders</a>
                     </li>
-                    <li><a href="#settings_page" data-transition="slidefade">Settings</a>
+                    <li><a href="#settings_page" data-transition="slidefade" style="text-align:center;">Settings</a>
                     </li>
                 </ul>
             </div>
@@ -180,75 +180,75 @@
                 </h1>
         </div>
         <div data-role="main" class="ui-content">
-            <ul>
+            <ul id="faq_ul">
                 <li>
-                    <strong>Q</strong> If I ordered a meal, but I can not come, what should I do?
+                    <strong>Q</strong> <p>If I ordered a meal, but I can not come, what should I do?</p>
                 </li>
                 <li>
-                    <strong>A</strong> Please ask your friend to help pick up the order.
-                </li>
-                <br>
-                <li>
-                    <strong>Q</strong> If I miss the deadline to order the food for today, what should I do?
-                </li>
-                <li>
-                    <strong>A</strong> After the deadline of 10am, you can place order of the “Special of today” until 11:20am. After 11:20am, we’ll have limited supply, you can order until sold out.
+                    <strong>A</strong> <p>Please ask your friend to help pick up the order.</p>
                 </li>
                 <br>
                 <li>
-                    <strong>Q</strong> What if I forget to pick up the order?
+                    <strong>Q</strong> <p> If I miss the deadline to order the food for today, what should I do?</p>
                 </li>
                 <li>
-                    <strong>A</strong> Please mark your calendar, be sure to come by and pick up. Otherwise you'll still be charged. You can find a friend to help pick up. You can cancel your order before 10am.
+                    <strong>A</strong> <p>After the deadline of 10am, you can place order of the “Special of today” until 11:20am. After 11:20am, we’ll have limited supply, you can order until sold out.</p>
                 </li>
                 <br>
                 <li>
-                    <strong>Q</strong> How to pay?
+                    <strong>Q</strong> <p>What if I forget to pick up the order?</p>
                 </li>
                 <li>
-                    <strong>A</strong> Users' orders will be processed if their balance is more or equal to $0 before the delivery date. You can recharge at the pick-up location. The system will automatically charge when ordering. Red warning pops up when balance is less than $15. Online payment: Put your user name\Name in the comment region. (Suggested minimum amount: $20) . Payment will be processed daily.
+                    <strong>A</strong> <p>Please mark your calendar, be sure to come by and pick up. Otherwise you'll still be charged. You can find a friend to help pick up. You can cancel your order before 10am.</p>
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> <p>How to pay?</p>
+                </li>
+                <li>
+                    <strong>A</strong> <p>Users' orders will be processed if their balance is more or equal to $0 before the delivery date. You can recharge at the pick-up location. The system will automatically charge when ordering. Red warning pops up when balance is less than $15. Online payment: Put your user name\Name in the comment region. (Suggested minimum amount: $20) . Payment will be processed daily.</p>
                     <ol>
                         <li>
-                            Users can transfer the money to Paypal: lunchnowalk@gmail.com by personal from Paypal balance or bank(Not by credit) otherwise, the users will need to pay for the transaction fees. Users can send an email to lunchnowalk@gmail.com after sending money through Paypal.</li>
+                            <p>Users can transfer the money to Paypal: lunchnowalk@gmail.com by personal from Paypal balance or bank(Not by credit) otherwise, the users will need to pay for the transaction fees. Users can send an email to lunchnowalk@gmail.com after sending money through Paypal.</p></li>
                         <li>
-                            Transfer money through Chasequickpay to jiangjing.36@gmail.com
+                            <p>Transfer money through Chasequickpay to jiangjing.36@gmail.com</p>
                         </li>
                     </ol>
                 </li>
                 <br>
                 <br>
                 <li>
-                    <strong>Q</strong> 如果我今天订了餐，但是中午临时有事取不来菜怎么办？
+                    <strong>Q</strong> <p>如果我今天订了餐，但是中午临时有事取不来菜怎么办？</p>
                 </li>
                 <li>
-                    <strong>A</strong> 建议请同学帮忙去取菜，报上自己的名字。
-                </li>
-                <br>
-                <li>
-                    <strong>Q</strong> 如果我今天错过了时间忘了订餐怎么办？
-                </li>
-                <li>
-                    <strong>A</strong> 错过10am的订餐截止日期，您还可以在11:20am之前订“今日特价”餐，在这个时间后，我们还会有少量供应，售完为止。
+                    <strong>A</strong> <p>建议请同学帮忙去取菜，报上自己的名字。</p>
                 </li>
                 <br>
                 <li>
-                    <strong>Q</strong> 忘了来取怎么办？
+                    <strong>Q</strong> <p>如果我今天错过了时间忘了订餐怎么办？</p>
                 </li>
                 <li>
-                    <strong>A</strong> 请同学们给自己手机日历上面标记提醒，一定要过来取。否则照样扣款。可以找朋友帮忙来取。10点之前可以取消订单。
+                    <strong>A</strong> <p>错过10am的订餐截止日期，您还可以在11:20am之前订“今日特价”餐，在这个时间后，我们还会有少量供应，售完为止。</p>
                 </li>
                 <br>
                 <li>
-                    <strong>Q</strong> 支付方式是如何的呢？
+                    <strong>Q</strong> <p>忘了来取怎么办？</p>
                 </li>
                 <li>
-                    <strong>A</strong> 用户网上帐户是大于等于$0的时候，订单都会被处理。在领餐的时候可以充值。订餐时自动扣款。余额少于$15时，将会有提示信息～ 在线支付：请在注释区填写用户名\姓名 为了大家方便，建议每次最少充值$20. 每天固定时间处理。
+                    <strong>A</strong> <p>请同学们给自己手机日历上面标记提醒，一定要过来取。否则照样扣款。可以找朋友帮忙来取。10点之前可以取消订单。</p>
+                </li>
+                <br>
+                <li>
+                    <strong>Q</strong> <p>支付方式是如何的呢？</p>
+                </li>
+                <li>
+                    <strong>A</strong> <p>用户网上帐户是大于等于$0的时候，订单都会被处理。在领餐的时候可以充值。订餐时自动扣款。余额少于$15时，将会有提示信息～ 在线支付：请在注释区填写用户名\姓名 为了大家方便，建议每次最少充值$20. 每天固定时间处理。</p>
                     <ol>
                         <li>
-                            用户可以转钱到Paypal账户：lunchnowalk@gmail.com，通过“个人支付”，资金来源请勿选择信用卡。否则所有产生的交易费用由用户承担。用户最好在Paypal转钱后同时给lunchnowalk@gmail.com发邮件。
+                            <p>用户可以转钱到Paypal账户：lunchnowalk@gmail.com，通过“个人支付”，资金来源请勿选择信用卡。否则所有产生的交易费用由用户承担。用户最好在Paypal转钱后同时给lunchnowalk@gmail.com发邮件。</p>
                         </li>
                         <li>
-                            用Chasequickpay把充值金额转入jiangjing.36@gmail.com
+                            <p>用Chasequickpay把充值金额转入jiangjing.36@gmail.com</p>
                         </li>
                     </ol>
                 </li>
@@ -356,6 +356,7 @@
                     __proto__: Object
                 ]
             */
+                $("#faq_ul p").css("white-space", "normal");
                 //console.log(data);
                 //console.log(order_history);
                 // the code below is for debug use.

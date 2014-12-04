@@ -55,7 +55,7 @@
             </div>
             <div data-role="main" class="ui-content" id="administrator_page_content">
                 <a href="administrator_order.php" rel="external"> Check Order </a><br>
-                <a href="administrator_money.php" rel="external"> 用户充值 </a>
+                <a href="administrator_money.php" rel="external"> 用户充值 Add Money </a>
                 <ul data-role="listview" data-inset="true" id="my-list">
                 </ul> 
             </div>  
@@ -83,10 +83,10 @@
                         <input type="text" name="price" id="price" value="6" data-clear-btn="true">
                     <!--</div>-->
                     <input type="submit" data-icon="check" data-iconpos="right" data-inline="true" style="background:#2E64FE;" value="Save"> 
+                    <a id="delete_button" href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" data-rel="popup" name="used_to_save_delete_id"> Delete </a>
+                <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
                 </form>
 
-                <a id="delete_button" href="#confirm_delete" class="ui-btn ui-btn-inline ui-btn-b ui-shadow ui-corner-all ui-icon-check ui-btn-icon-left ui-btn-inline ui-mini ui-icon-delete" style="background:#DF0101;" data-rel="popup" name="used_to_save_delete_id"> Delete </a>
-                <a href="#" class="ui-btn ui-btn-inline ui-shadow ui-corner-all ui-btn-inline ui-mini" data-rel="back">Cancel</a>
                 
                 <div data-role="popup" id="confirm_delete">
                     <p>Are u sure u want to delete this menu.</p>
