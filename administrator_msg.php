@@ -45,10 +45,39 @@
         </style>
     </head>
     <body>
+        <div data-role="page">
+            <div data-role="header">
+                <h1> 
+                    User Messages <br>
+                </h1> 
+            </div> 
+            <div data-role="main" class="ui-content">
+                <ul id="msg_ul" data-role="listview">
+                </ul>
+            </div>
+        </div>
     </body>
     <script>
         var Failed = "Failed";
         var data = <?php echo $RESULT ?>;
-
+        for(var i = 0; i < data.length; i++){
+            var v = data[i];
+            /*
+             v is like 
+             {"last_name":"Wang","first_name":"Yiyi","wechatid":"owHwut4vD3-Gf3WvMKKMBS-LFLIk","msg_id":"54811cbfb4582","msg":"I love u","responded":"0"}
+            */
+            var li = $(((v.responded === "0")?("<li> "):("<li data-theme='b'>"))+
+                          "    <a href='#'>"+
+                                    "<p>" + v.last_name + " " + v.first_name + "</p>" + 
+                                    "<strong>" + v.msg +"</strong>" +
+                               "</a>"+
+                        +"</li>");
+            li.v = v; // attach v object;
+            li.click(function(){
+                console.log(this.v);
+            })
+            $("#msg_ul").append(li);
+        } 
+        $('ul').listview().listview('refresh');
     </script>
 </html>

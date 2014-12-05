@@ -681,7 +681,8 @@
     
     // user leave message
     $("#send_message_button").click(function(){
-        var message = $("#user_leave_msg_textarea").val();
+        var message = $("#user_leave_msg_textarea").val().trim();
+        if(message.length >= 128 || message.length == 0) return;
         $.ajax({
             url: "user_leave_message.php",
             async: false,
