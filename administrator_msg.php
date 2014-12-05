@@ -111,7 +111,8 @@
                     // 下面是发送的信息
                     data: {
                         wechatid: chosen_v.wechatid,
-                        message: response_content 
+                        message: response_content,
+                        from_msg_id: chosen_v.msg_id
                     }
                 }).done(function (data) {
                     alert("Message delivered! Thx ;)");

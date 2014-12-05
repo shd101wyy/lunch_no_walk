@@ -25,6 +25,7 @@
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
     <script src="jquery.qrcode-0.11.0.min.js"></script> <!-- qr code support -->
+    <script src="jquery.noty.packaged.min.js"></script> <!-- notification support -->
 </head>
 
 <body>
@@ -303,7 +304,7 @@
     var order_history = null;
     var pickup_location = null;
     var incomplete_order_num = 0;
-
+    var admin_responses = [];
     $(document).ready(function () {
         /*
          * get user_info order_history menu_data from server.
@@ -326,6 +327,50 @@
                 data = JSON.parse(v[0]);
                 order_history = JSON.parse(v[1]);
                 user_info = JSON.parse(v[2]);
+                admin_responses = JSON.parse(v[3]);
+                
+                if(admin_responses.length != 0){
+                    noty({text: "You got response(s) from restaurant ;)", 
+                              //layout: "topRight",
+                          layout: "topRight",
+                          type: "alert",
+                        });
+                    /*
+                    * show response from admin 
+                    */
+                    for(var i = 0; i < admin_responses.length; i++){
+                        var m = admin_responses[i];
+                        var msg = m.msg;
+                        var msg_id = m.msg_id;
+                        
+                       
+                        var create_close_fn = function(msg, msg_id){
+                            return function(){
+                                $.ajax({
+                                    url: "user_delete_admin_response.php",
+                                    async: true,
+                                    type: "POST",
+                                    // 下面是发送的信息
+                                    data: {
+                                        msg_id: msg_id
+                                    }
+                                }).done(function (data) {
+                                }).fail(function (data) {
+                                })
+                            }
+                        }
+                        var close_fn = create_close_fn(msg, msg_id);
+                        noty({text: msg, 
+                              //layout: "topRight",
+                              layout: "topRight",
+                              type: "information",
+                              callback: {
+                                onClose: close_fn
+                              }
+                            });
+                    }
+                }
+                
                 pickup_location = user_info.pickup_location;
                 // setup time
                 var d = new Date();

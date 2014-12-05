@@ -77,10 +77,27 @@
             exit;
         }
 
+        // get admin response
+        $query_content = "SELECT msg_id, msg FROM admin_msg WHERE wechat_id='$wechatid'";
+        $query_result = mysqli_query($cons, $query_content);
+        if($query_result){
+            $ADMIN_RESPONSE = array();
+            while($php_arr = mysqli_fetch_array($query_result, MYSQLI_ASSOC)){
+                array_push($ADMIN_RESPONSE, $php_arr);
+            }
+            $ADMIN_RESPONSE = json_encode($ADMIN_RESPONSE);
+        }
+        else{
+            $ADMIN_RESPONSE = "Cannot connect to MySQL";
+            echo "Failed";
+            exit;
+        }
+
         $output = array();
         array_push($output, $RESULT);
         array_push($output, $ORDER_HISTORY);
         array_push($output, $USER_INFO);
+        array_push($output, $ADMIN_RESPONSE);
         $output = json_encode($output);
         echo $output;
     ?>
