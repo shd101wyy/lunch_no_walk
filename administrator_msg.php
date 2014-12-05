@@ -56,28 +56,70 @@
                 </ul>
             </div>
         </div>
+        <div data-role="page" id="response_page">
+            <div data-role="header">
+                <h1>
+                    Respond to user
+                </h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <textarea id="leave_msg_textarea" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" placeholder="Enter your message here"></textarea>
+                <button id="send_message_button"> Send </button>
+            </div>
+        </div>
     </body>
     <script>
         var Failed = "Failed";
         var data = <?php echo $RESULT ?>;
-        for(var i = 0; i < data.length; i++){
-            var v = data[i];
-            /*
-             v is like 
-             {"last_name":"Wang","first_name":"Yiyi","wechatid":"owHwut4vD3-Gf3WvMKKMBS-LFLIk","msg_id":"54811cbfb4582","msg":"I love u","responded":"0"}
-            */
-            var li = $(((v.responded === "0")?("<li> "):("<li data-theme='b'>"))+
-                          "    <a href='#'>"+
-                                    "<p>" + v.last_name + " " + v.first_name + "</p>" + 
-                                    "<strong>" + v.msg +"</strong>" +
-                               "</a>"+
-                        +"</li>");
-            li.v = v; // attach v object;
-            li.click(function(){
-                console.log(this.v);
+        $(document).ready(function(){
+            var chosen_v = null;
+            for(var i = 0; i < data.length; i++){
+                var v = data[i];
+                /*
+                 v is like 
+                 {"last_name":"Wang","first_name":"Yiyi","wechatid":"owHwut4vD3-Gf3WvMKKMBS-LFLIk","msg_id":"54811cbfb4582","msg":"I love u","responded":"0"}
+                */
+                var li = $(((v.responded === "0")?("<li> "):("<li data-theme='b'>"))+
+                              "    <a href='#response_page'>"+
+                                        "<p>" + v.last_name + " " + v.first_name + "</p>" + 
+                                        "<strong>" + v.msg +"</strong>" +
+                                   "</a>"+
+                            +"</li>");
+                li.attr("data", v); // attach v object;
+                li.click({v: v}, function(event){
+                    chosen_v = event.data.v;
+                });
+                $("#msg_ul").append(li);
+            } 
+            $('ul').listview().listview('refresh');
+            
+            $("#send_message_button").click(function(){
+                if(chosen_v == null) return;
+                var response_content = $("#leave_msg_textarea").val().trim(); 
+                if(response_content.length == 0){
+                    alert("Cannot send empty string");
+                    return;
+                }
+                if(response_content.length > 128){
+                    alert("Response too long");
+                    return;
+                }
+                $.ajax({
+                    url: "admin_respond_to_user.php",
+                    async: false,
+                    type: "POST",
+                    // 下面是发送的信息
+                    data: {
+                        wechatid: chosen_v.wechatid,
+                        message: response_content 
+                    }
+                }).done(function (data) {
+                    alert("Message delivered! Thx ;)");
+                }).fail(function (data) {
+                    alert(data);
+                })
             })
-            $("#msg_ul").append(li);
-        } 
-        $('ul').listview().listview('refresh');
+        })
+
     </script>
 </html>

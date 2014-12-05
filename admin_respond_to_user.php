@@ -1,6 +1,6 @@
 <?php
 /*
- send message to admin
+    respond msg to user
 */
     $wechatid = $_POST["wechatid"];
     $message = $_POST["message"];
@@ -11,10 +11,9 @@
         echo "Failed";
         exit;
     }
-    $query_content = "INSERT INTO customer_msg VALUES ( '$msg_id', 
+    $query_content = "INSERT INTO admin_msg VALUES ( '$msg_id', 
                                                 '$wechatid',
-                                                '$message',  
-                                                0)";  
+                                                '$message')";  
     mysqli_query($cons, $query_content);
     echo "Success";
 ?>
