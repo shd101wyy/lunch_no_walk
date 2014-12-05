@@ -505,7 +505,7 @@
                     $("#qr_code").qrcode({
                         render:"canvas",
                         text:"http://www.planetwalley.com/lunch_no_walk/confirm_order_from_user.php?wechatid="+wechatid,
-                        size:64
+                        size:128
                     });
                 }
             }
