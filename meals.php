@@ -80,7 +80,7 @@
                 <br>You can cancel order here by clicking crossing button.
             </p>
             
-            <p>Quick Confirm</p>
+            <p id="qr_confirm_p">Quick Confirm</p>
             <div id="qr_code"></div> <!-- qr code here -->
             
             <ul data-role="listview" data-inset="true" id="order_history_list_incomplete">
@@ -286,6 +286,7 @@
     var data = null;
     var order_history = null;
     var pickup_location = null;
+    var incomplete_order_num = 0;
 
     $(document).ready(function () {
         /*
@@ -484,6 +485,7 @@
                             "<a onclick=\"click_split_button_delete('" + order_id + "', " + price + " );\" href='#delete_order' data-transition='pop' data-icon='delete'>Delete </a>" +
                             "</li>";
                         $("#order_history_list_incomplete").append(content);
+                        incomplete_order_num++;
                     }
                 }
 
@@ -497,16 +499,22 @@
                 //$('#order_history_list_incomplete').listview('refresh');
                 $('ul').listview().listview('refresh');
                 
-                // check user money 
-                if(user_info.money < 0){
-                    $("#qr_code").text("Not enough money in your account, please pay with cash");
+                if(incomplete_order_num == 0){ // no incomplete order 
+                    $("#qr_confirm_p").hide();
+                    $("#qr_code").hide();
                 }
                 else{
-                    $("#qr_code").qrcode({
-                        render:"canvas",
-                        text:"http://www.planetwalley.com/lunch_no_walk/confirm_order_from_user.php?wechatid="+wechatid,
-                        size:128
-                    });
+                    // check user money 
+                    if(user_info.money < 0){
+                        $("#qr_code").text("Not enough money in your account, please pay with cash");
+                    }
+                    else{
+                        $("#qr_code").qrcode({
+                            render:"canvas",
+                            text:"http://www.planetwalley.com/lunch_no_walk/confirm_order_from_user.php?wechatid="+wechatid,
+                            size:128
+                        });
+                    }
                 }
             }
         }).fail(function (data) {
