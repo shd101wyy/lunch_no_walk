@@ -342,31 +342,13 @@
                         var m = admin_responses[i];
                         var msg = m.msg;
                         var msg_id = m.msg_id;
-                        
-                       
-                        var create_close_fn = function(msg, msg_id){
-                            return function(){
-                                $.ajax({
-                                    url: "user_delete_admin_response.php",
-                                    async: true,
-                                    type: "POST",
-                                    // 下面是发送的信息
-                                    data: {
-                                        msg_id: msg_id
-                                    }
-                                }).done(function (data) {
-                                }).fail(function (data) {
-                                })
-                            }
-                        }
-                        var close_fn = create_close_fn(msg, msg_id);
                         noty({text: msg, 
                               //layout: "topRight",
                               layout: "topRight",
                               type: "information",
-                              callback: {
+                              /*callback: {
                                 onClose: close_fn
-                              }
+                              }*/
                             });
                     }
                 }
@@ -743,6 +725,36 @@
             alert(data);
         })
     })
+    
+    
+    setInterval(function(){
+        $.ajax({
+            url: "user_check_admin_message.php",
+            type: "POST",
+            // send data
+            data: {
+                wechatid: wechatid
+            }
+        }).done(function(data){
+                if(data === "Failed") return;
+                data = JSON.parse(data);
+                for(var i = 0; i < data.length; i++){
+                    var m = data[i];
+                    var msg = m.msg;
+                    var msg_id = m.msg_id;
+                    noty({text: msg, 
+                          //layout: "topRight",
+                          layout: "topRight",
+                          type: "information",
+                          /*callback: {
+                            onClose: close_fn
+                          }*/
+                        });
+                }
+        }).fail(function(data){
+            
+        })
+    }, 10000); // check message very 10 seconds
 </script>
 
 </html>

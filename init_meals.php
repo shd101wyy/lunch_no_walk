@@ -93,6 +93,10 @@
             exit;
         }
 
+        // delete admin response 
+        $query_content = "DELETE FROM admin_msg WHERE wechat_id='$wechatid'";
+        mysqli_query($cons, $query_content);
+
         $output = array();
         array_push($output, $RESULT);
         array_push($output, $ORDER_HISTORY);
