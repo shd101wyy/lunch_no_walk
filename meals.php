@@ -39,6 +39,7 @@
             <h3 id="rest_money">0</h3>
             <a href="#faq">FAQ 疑问解答</a> 
             <br>
+            <a href="#leave_msg_page">Not in menu? Tell us what you want!</a>
             <br>
 
             <!-- 
@@ -176,6 +177,21 @@
         </div>
     </div>
     
+    <!-- 留言页 -->
+    <div data-role="page" id="leave_msg_page">
+        <div data-role="header">
+            <h1>
+                Tell us what you want
+            </h1>
+        </div>
+        <div data-role="main" class="ui-content">
+            <p>
+                Leave your message here, we will send it to our restaurant
+            </p>
+            <textarea id="user_leave_msg_textarea" class="ui-input-text ui-body-c ui-corner-all ui-shadow-inset" placeholder="Enter your message here"></textarea>
+            <button id="send_message_button"> Send </button>
+        </div>
+    </div>
     <!-- FAQ page -->
     <div data-role="page" id="faq">
         <div data-role="header">
@@ -661,7 +677,25 @@
         }).fail(function (data) {
             alert(data);
         })
-
+    })
+    
+    // user leave message
+    $("#send_message_button").click(function(){
+        var message = $("#user_leave_msg_textarea").val();
+        $.ajax({
+            url: "user_leave_message.php",
+            async: false,
+            type: "POST",
+            // 下面是发送的信息
+            data: {
+                wechatid: wechatid,
+                message: message
+            }
+        }).done(function (data) {
+            alert("Message delivered! Thx ;)");
+        }).fail(function (data) {
+            alert(data);
+        })
     })
 </script>
 
