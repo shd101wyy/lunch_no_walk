@@ -60,7 +60,7 @@
     <script>
         var result = "<?php echo $RESULT ?>";
         if(result == "Done")
-            window.location.replace("http://planetwalley.com/lunch_no_walk/administrator.php"); // reload administrator.php page
+            window.location.replace("http://uiuccssa.org/lunch_no_walk/administrator.php"); // reload administrator.php page
         else{ // error
             document.getElementById("my_div").innerHTML = "<h1> Error, Failed to add menu </h1>";
         }

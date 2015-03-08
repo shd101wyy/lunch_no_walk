@@ -92,7 +92,7 @@ class wechatCallbackapiTest{
                                                         "news", 
                                                         "Welcome Admin", 
                                                         "Click me to edit menu",               
-                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                    "http://www.planetwalley.com/lunch_no_walk/administrator.php");
+                                                "http://uiuccssa.org/lunch_no_walk/ichiban.png",                                                                                                    "http://uiuccssa.org/lunch_no_walk/administrator.php");
                                     
                                 }
                                 else{ // it is admin
@@ -103,7 +103,7 @@ class wechatCallbackapiTest{
                                                         "news", 
                                                         "Lunch no Walk served by Ichiban", 
                                                         "Menu for " . $current_weekday /*. " " . $current_hour*/ . "\nClick me to order",               
-                                                "http://www.planetwalley.com/lunch_no_walk/ichiban.png",                                                                                                   "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid='$fromUsername'");
+                                                "http://uiuccssa.org/lunch_no_walk/ichiban.png",                                                                                                   "http://uiuccssa.org/lunch_no_walk/meals.php?wechatid='$fromUsername'");
                                     
                                 }
                 	           echo $resultStr;                                
@@ -115,7 +115,7 @@ class wechatCallbackapiTest{
                                               "请您点击以下连接进行注册\n" .
                                                "Welcome to use Lunch No Walk;)\n" . 
                                                "Please click the link below to signup\n" .
-                                              "<a href=\"www.planetwalley.com/lunch_no_walk/signup_page.php?wechatid='$fromUsername'\">点击这里注册/Click here to signup</a>"; 
+                                              "<a href=\"http://uiuccssa.org/lunch_no_walk/signup_page.php?wechatid='$fromUsername'\">点击这里注册/Click here to signup</a>"; 
                                 // 测试
                                 //$contentStr = $contentStr . "\n" . $fromUsername;
                                 //$contentStr = $contentStr . "rows: " . mysqli_num_rows($result);

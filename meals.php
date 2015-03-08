@@ -554,7 +554,7 @@
                     else{
                         $("#qr_code").qrcode({
                             render:"canvas",
-                            text:"http://www.planetwalley.com/lunch_no_walk/confirm_order_from_user.php?wechatid="+wechatid,
+                            text:"http://uiuccssa.org/lunch_no_walk/confirm_order_from_user.php?wechatid="+wechatid,
                             size:128
                         });
                     }
@@ -699,7 +699,7 @@
             }
         }).done(function (data) {
             alert(data);
-            current_url = "http://www.planetwalley.com/lunch_no_walk/meals.php?wechatid=" + wechatid;
+            current_url = "http://uiuccssa.org/lunch_no_walk/meals.php?wechatid=" + wechatid;
             window.location.href = (current_url); // reload page
         }).fail(function (data) {
             alert(data);
