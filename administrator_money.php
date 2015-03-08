@@ -52,7 +52,7 @@
         $(document).ready(function(){
             <?php
                 // try connect to sql
-                $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库, connect to sql
+                $cons = mysqli_connect("localhost", "uiuccssa_lunch", "4rfv5tgb", "uiuccssa_IchibanFood"); // 连接到数据库, connect to sql
                 if (mysqli_connect_errno()){
                     $RESULT = "Cannot connect to MySQL: " . mysqli_connect_error();
                     echo $RESULT;

@@ -1,7 +1,7 @@
 <html>
 <?php
     // get user message
-    $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk"); // 连接到数据库
+    $cons = mysqli_connect("localhost", "uiuccssa_lunch", "4rfv5tgb", "uiuccssa_IchibanFood"); // 连接到数据库
     if (mysqli_connect_errno()){
         echo "无法连接到MySQL数据库: " . mysqli_connect_error();
         exit;

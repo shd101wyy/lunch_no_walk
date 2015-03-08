@@ -50,7 +50,7 @@
                     
                     tutorial is here(教程在这个网站) http://jingyan.baidu.com/article/2d5afd69efd2cf85a3e28e6b.html
                 -->
-            <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd">About lunch no walk </a>
+            <a href="http://mp.weixin.qq.com/s?__biz=MzAxMDEyMzA3NA==&mid=203456314&idx=1&sn=5f10942e0d4aaed1cdbf2341e85b1f60#rd">About lunch no walk </a>
 
 
             <ul data-role="listview" data-inset="true" id="menu_list">
@@ -638,7 +638,7 @@
             history.pushState({}, "", "meals.php?wechatid=" + wechatid)
             history.pushState({}, "", "meals.php?wechatid=" + wechatid+"&refresh=1"); // change browser history, set refresh option
             //history.replaceState({}, "", "meals.php?wechatid=" + wechatid + "#order_history_page"); // change browser history
-            window.location.href = ("http://mp.weixin.qq.com/s?__biz=MzA3MzI3NzEyMA==&mid=202312491&idx=1&sn=370c5053099f04bd33ac67b0e3c69b53#rd");
+            window.location.href = ("http://mp.weixin.qq.com/s?__biz=MzAxMDEyMzA3NA==&mid=203456314&idx=1&sn=5f10942e0d4aaed1cdbf2341e85b1f60#rd");
         }).fail(function (data) {
             alert(data);
         });

@@ -41,7 +41,7 @@ class wechatCallbackapiTest{
               		$msgType = "text";
                     // try connect to MySQL
                     // change the $user, $password, $db_name later
-                    $cons = mysqli_connect("localhost", "planetnd_yiyi", "4rfv5tgb", "planetnd_lunch_no_walk");
+                    $cons = mysqli_connect("localhost", "uiuccssa_lunch", "4rfv5tgb", "uiuccssa_IchibanFood");
                     // check connect error
                     if (mysqli_connect_errno()){
                         $contentStr = "无法连接到MySQL数据库: " . mysqli_connect_error();
@@ -162,7 +162,7 @@ class wechatCallbackapiTest{
 }
 
 $wechatObj = new wechatCallbackapiTest();
-//$wechatObj->valid();
+//$wechatObj->valid();   // 验证 token, 验证完了的话可以注释掉这一行。
 $wechatObj->responseMsg();
 
 ?>
